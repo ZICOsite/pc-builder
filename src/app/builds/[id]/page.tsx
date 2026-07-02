@@ -7,17 +7,19 @@ import { ApiError, getBuild, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
 import type { Build } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
+import { useLocale } from "@/components/locale-provider";
 
 type State =
   | { status: "loading" }
   | { status: "not-found" }
   | { status: "forbidden" }
-  | { status: "error"; message: string }
+  | { status: "error" }
   | { status: "ready"; build: Build };
 
 export default function BuildPage() {
   const { id } = useParams<{ id: string }>();
   const auth = useAuth();
+  const { locale, t } = useLocale();
   const [state, setState] = useState<State>({ status: "loading" });
   const [shareState, setShareState] = useState<"idle" | "sharing" | "copied" | "error">("idle");
 
@@ -28,7 +30,7 @@ export default function BuildPage() {
       .catch((err) => {
         if (err instanceof ApiError && err.status === 404) setState({ status: "not-found" });
         else if (err instanceof ApiError && err.status === 403) setState({ status: "forbidden" });
-        else setState({ status: "error", message: err instanceof Error ? err.message : "Ошибка загрузки" });
+        else setState({ status: "error" });
       });
   }, [id, auth]);
 
@@ -46,19 +48,19 @@ export default function BuildPage() {
   }
 
   if (state.status === "loading") {
-    return <p className="p-4 text-center">Загрузка сборки...</p>;
+    return <p className="p-4 text-center">{t.buildPage.loadingBuild}</p>;
   }
 
   if (state.status === "not-found") {
-    return <p className="p-4 text-center text-red-500">Сборка не найдена</p>;
+    return <p className="p-4 text-center text-red-500">{t.buildPage.notFound}</p>;
   }
 
   if (state.status === "forbidden") {
-    return <p className="p-4 text-center text-red-500">Эта сборка приватная</p>;
+    return <p className="p-4 text-center text-red-500">{t.buildPage.forbidden}</p>;
   }
 
   if (state.status === "error") {
-    return <p className="p-4 text-center text-red-500">{state.message}</p>;
+    return <p className="p-4 text-center text-red-500">{t.buildPage.loadErrorFallback}</p>;
   }
 
   const { build } = state;
@@ -68,7 +70,7 @@ export default function BuildPage() {
   return (
     <div className="flex w-full max-w-2xl flex-col gap-2 p-4">
       <Link href="/" className="text-sm text-zinc-400 underline">
-        ← К конфигуратору
+        {t.common.backToConfigurator}
       </Link>
       <h1 className="text-xl font-semibold">{build.name}</h1>
 
@@ -81,19 +83,19 @@ export default function BuildPage() {
             <div className="text-sm text-zinc-500">
               {item.component.brand} {item.component.name}
             </div>
-            {specSummary(item.component) && (
-              <div className="text-sm text-zinc-400">{specSummary(item.component)}</div>
+            {specSummary(item.component, t) && (
+              <div className="text-sm text-zinc-400">{specSummary(item.component, t)}</div>
             )}
           </div>
           <span className="whitespace-nowrap text-sm">
-            {formatPrice(Number(item.component.price) * item.quantity, item.component.currency)}
+            {formatPrice(Number(item.component.price) * item.quantity, item.component.currency, locale)}
           </span>
         </div>
       ))}
 
       <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-4 dark:border-white/15">
-        <span className="text-lg font-semibold">Итого</span>
-        <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS")}</span>
+        <span className="text-lg font-semibold">{t.common.total}</span>
+        <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS", locale)}</span>
       </div>
 
       {isOwner && (
@@ -104,16 +106,16 @@ export default function BuildPage() {
           className="mt-2 rounded-full bg-foreground px-5 py-3 text-background disabled:opacity-40"
         >
           {shareState === "sharing"
-            ? "Публикация..."
+            ? t.buildPage.publishing
             : shareState === "copied"
-              ? "Ссылка скопирована ✅"
+              ? t.buildPage.linkCopied
               : build.isPublic
-                ? "Скопировать ссылку"
-                : "Поделиться"}
+                ? t.buildPage.copyLink
+                : t.buildPage.share}
         </button>
       )}
       {shareState === "error" && (
-        <p className="text-center text-sm text-red-500">Не удалось скопировать ссылку</p>
+        <p className="text-center text-sm text-red-500">{t.buildPage.copyError}</p>
       )}
     </div>
   );

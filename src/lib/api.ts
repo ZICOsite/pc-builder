@@ -19,7 +19,7 @@ export async function loginWithTelegram(initData: string): Promise<{ accessToken
   });
 
   if (!res.ok) {
-    throw new Error(`Ошибка авторизации: ${res.status}`);
+    throw new ApiError(res.status, `Telegram auth failed: ${res.status}`);
   }
 
   return res.json();
@@ -44,7 +44,7 @@ export async function apiFetch(path: string, accessToken: string, init?: Request
 export async function getComponents(type: ComponentType): Promise<Component[]> {
   const res = await fetch(`${API_BASE_URL}/components?type=${type}`);
   if (!res.ok) {
-    throw new Error(`Ошибка загрузки компонентов: ${res.status}`);
+    throw new ApiError(res.status, `Failed to load components: ${res.status}`);
   }
   return res.json();
 }
@@ -77,13 +77,7 @@ export async function getBuild(id: string, accessToken?: string): Promise<Build>
   });
 
   if (!res.ok) {
-    const message =
-      res.status === 404
-        ? "Сборка не найдена"
-        : res.status === 403
-          ? "Эта сборка приватная"
-          : `Ошибка загрузки сборки: ${res.status}`;
-    throw new ApiError(res.status, message);
+    throw new ApiError(res.status, `Failed to load build: ${res.status}`);
   }
 
   return res.json();

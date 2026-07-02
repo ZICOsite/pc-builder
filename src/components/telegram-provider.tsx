@@ -10,7 +10,7 @@ type AuthState =
   | { status: "loading" }
   | { status: "not-tma" }
   | { status: "authenticated"; accessToken: string; userId: number }
-  | { status: "error"; message: string };
+  | { status: "error" };
 
 const AuthContext = createContext<AuthState>({ status: "loading" });
 
@@ -42,18 +42,15 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
 
         const initDataRaw = retrieveRawInitData();
         if (!initDataRaw) {
-          setState({ status: "error", message: "Не удалось получить данные Telegram" });
+          setState({ status: "error" });
           return;
         }
 
         const { accessToken } = await loginWithTelegram(initDataRaw);
         localStorage.setItem(TOKEN_STORAGE_KEY, accessToken);
         setState({ status: "authenticated", accessToken, userId: decodeUserId(accessToken) });
-      } catch (err) {
-        setState({
-          status: "error",
-          message: err instanceof Error ? err.message : "Ошибка авторизации",
-        });
+      } catch {
+        setState({ status: "error" });
       }
     }
 

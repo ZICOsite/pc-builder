@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TelegramProvider } from "@/components/telegram-provider";
+import { LocaleProvider } from "@/components/locale-provider";
 import { Nav } from "@/components/nav";
 import "./globals.css";
 
@@ -30,10 +31,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <TelegramProvider>
-          <Nav />
-          {children}
-        </TelegramProvider>
+        <LocaleProvider>
+          <TelegramProvider>
+            <Nav />
+            {children}
+          </TelegramProvider>
+        </LocaleProvider>
       </body>
     </html>
   );
