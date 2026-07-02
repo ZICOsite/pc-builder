@@ -1,0 +1,61 @@
+import type { Component, ComponentType } from "./types";
+
+export type Selections = Partial<Record<ComponentType, Component>>;
+
+const PSU_WATTAGE_BUFFER = 100;
+
+export function isCompatible(type: ComponentType, component: Component, selections: Selections): boolean {
+  const cpu = selections.CPU;
+  const motherboard = selections.MOTHERBOARD;
+  const gpu = selections.GPU;
+  const pcCase = selections.CASE;
+  const cooling = selections.COOLING;
+
+  switch (type) {
+    case "CPU":
+      return !motherboard?.motherboardSpecs || component.cpuSpecs?.socket === motherboard.motherboardSpecs.socket;
+
+    case "MOTHERBOARD":
+      return !cpu?.cpuSpecs || component.motherboardSpecs?.socket === cpu.cpuSpecs.socket;
+
+    case "RAM":
+      return !motherboard?.motherboardSpecs || component.ramSpecs?.memoryType === motherboard.motherboardSpecs.memoryType;
+
+    case "GPU":
+      return (
+        !pcCase?.caseSpecs ||
+        !component.gpuSpecs ||
+        component.gpuSpecs.length <= pcCase.caseSpecs.maxGpuLength
+      );
+
+    case "COOLING": {
+      if (cpu?.cpuSpecs && component.coolingSpecs) {
+        const supportedSockets = component.coolingSpecs.socket.split(",").map((s) => s.trim());
+        if (!supportedSockets.includes(cpu.cpuSpecs.socket)) return false;
+      }
+      if (pcCase?.caseSpecs && component.coolingSpecs?.height) {
+        if (component.coolingSpecs.height > pcCase.caseSpecs.maxCoolerHeight) return false;
+      }
+      return true;
+    }
+
+    case "CASE": {
+      if (gpu?.gpuSpecs && component.caseSpecs && component.caseSpecs.maxGpuLength < gpu.gpuSpecs.length) {
+        return false;
+      }
+      if (cooling?.coolingSpecs?.height && component.caseSpecs && component.caseSpecs.maxCoolerHeight < cooling.coolingSpecs.height) {
+        return false;
+      }
+      return true;
+    }
+
+    case "PSU": {
+      const requiredWattage = (cpu?.cpuSpecs?.tdp ?? 0) + (gpu?.gpuSpecs?.tdp ?? 0);
+      if (requiredWattage === 0 || !component.psuSpecs) return true;
+      return component.psuSpecs.wattage >= requiredWattage + PSU_WATTAGE_BUFFER;
+    }
+
+    default:
+      return true;
+  }
+}
