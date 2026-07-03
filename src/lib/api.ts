@@ -1,6 +1,11 @@
 import type { Build, Component, ComponentType, ReferralStats, UserProfile } from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
+const BOT_USERNAME = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "PCForgeUzBot";
+
+export function getReferralLink(buildId: string): string {
+  return `https://t.me/${BOT_USERNAME}?start=${buildId}`;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -93,4 +98,12 @@ export async function getProfile(accessToken: string): Promise<UserProfile> {
 
 export async function getReferralStats(accessToken: string): Promise<ReferralStats> {
   return apiFetch("/referrals/stats", accessToken);
+}
+
+export async function trackReferral(buildId: string, accessToken: string): Promise<void> {
+  await apiFetch("/referrals/track", accessToken, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ buildId }),
+  });
 }

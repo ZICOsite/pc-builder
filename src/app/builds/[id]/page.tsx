@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ApiError, getBuild, shareBuild } from "@/lib/api";
+import { ApiError, getBuild, getReferralLink, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
 import type { Build } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
@@ -40,7 +40,7 @@ export default function BuildPage() {
     try {
       const build = state.build.isPublic ? state.build : await shareBuild(state.build.id, auth.accessToken);
       setState({ status: "ready", build });
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(getReferralLink(build.id));
       setShareState("copied");
     } catch {
       setShareState("error");

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { TelegramProvider } from "@/components/telegram-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 import { Nav } from "@/components/nav";
+import { ReferralTracker } from "@/components/referral-tracker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
           <TelegramProvider>
+            <ReferralTracker />
             <Nav />
             {children}
           </TelegramProvider>
