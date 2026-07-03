@@ -5,9 +5,19 @@ import Link from "next/link";
 import { getComponents, saveBuild } from "@/lib/api";
 import { isCompatible, type Selections } from "@/lib/compatibility";
 import { formatPrice, specSummary } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import type { Component, ComponentType } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 const CATEGORY_TYPES: ComponentType[] = [
   "CPU",
@@ -91,109 +101,129 @@ export function Configurator() {
   }
 
   if (loading) {
-    return <p className="p-4 text-center">{t.configurator.loading}</p>;
+    return <p className="p-4 text-center text-muted-foreground">{t.configurator.loading}</p>;
   }
 
   if (loadError) {
-    return <p className="p-4 text-center text-red-500">{t.configurator.loadErrorFallback}</p>;
+    return <p className="p-4 text-center text-destructive">{t.configurator.loadErrorFallback}</p>;
   }
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-2 p-4">
-      {CATEGORY_TYPES.map((type) => {
-        const label = t.categories[type];
-        const selected = selections[type];
-        const options = (componentsByType[type] ?? []).filter((c) => isCompatible(type, c, selections));
-        const isOpen = openCategory === type;
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
+      <Card className="gap-0 py-0">
+        <CardContent className="px-4 py-0">
+          <Accordion
+            value={openCategory ? [openCategory] : []}
+            onValueChange={(value) => setOpenCategory((value[0] as ComponentType | undefined) ?? null)}
+          >
+            {CATEGORY_TYPES.map((type) => {
+              const label = t.categories[type];
+              const selected = selections[type];
+              const options = (componentsByType[type] ?? []).filter((c) => isCompatible(type, c, selections));
 
-        return (
-          <div key={type} className="rounded-lg border border-black/10 dark:border-white/15">
-            <button
+              return (
+                <AccordionItem key={type} value={type}>
+                  <AccordionTrigger>
+                    <div className="flex w-full items-center justify-between gap-2 pr-2">
+                      <div>
+                        <div className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                          {label}
+                        </div>
+                        {selected ? (
+                          <div className="font-semibold">
+                            {selected.brand} {selected.name}
+                          </div>
+                        ) : (
+                          <div className="text-sm text-muted-foreground">{t.configurator.notSelected}</div>
+                        )}
+                      </div>
+                      {selected && (
+                        <Badge variant="secondary" className="shrink-0">
+                          {formatPrice(Number(selected.price), selected.currency, locale)}
+                        </Badge>
+                      )}
+                    </div>
+                  </AccordionTrigger>
+
+                  <AccordionContent>
+                    <div className="flex flex-col gap-1">
+                      {selected && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="justify-start"
+                          onClick={() => deselectComponent(type)}
+                        >
+                          {t.configurator.removeSelection}
+                        </Button>
+                      )}
+                      {options.length === 0 && (
+                        <p className="p-2 text-sm text-muted-foreground">{t.configurator.noCompatibleOptions}</p>
+                      )}
+                      {options.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          className={cn(
+                            "flex items-center justify-between gap-2 rounded-lg p-2 text-left text-sm transition-colors hover:bg-muted",
+                            selected?.id === c.id && "bg-accent text-accent-foreground",
+                          )}
+                          onClick={() => selectComponent(type, c)}
+                        >
+                          <span>
+                            {c.brand} {c.name}
+                            {specSummary(c, t) && (
+                              <span className="text-muted-foreground"> · {specSummary(c, t)}</span>
+                            )}
+                          </span>
+                          <span className="shrink-0 whitespace-nowrap">
+                            {formatPrice(Number(c.price), c.currency, locale)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="flex items-center justify-between">
+          <span className="text-lg font-semibold">{t.common.total}</span>
+          <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS", locale)}</span>
+        </CardContent>
+        <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
+          {auth.status === "authenticated" ? (
+            <Button
               type="button"
-              className="flex w-full items-center justify-between gap-2 p-3 text-left"
-              onClick={() => setOpenCategory(isOpen ? null : type)}
+              size="lg"
+              disabled={totalPrice === 0 || saveState.status === "saving"}
+              onClick={handleSave}
+              className="w-full"
             >
-              <div>
-                <div className="text-sm text-zinc-500">{label}</div>
-                {selected ? (
-                  <div className="font-medium">{selected.brand} {selected.name}</div>
-                ) : (
-                  <div className="text-zinc-400">{t.configurator.notSelected}</div>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                {selected && (
-                  <span className="text-sm">{formatPrice(Number(selected.price), selected.currency, locale)}</span>
-                )}
-                <span className="text-zinc-400">{isOpen ? "▲" : "▼"}</span>
-              </div>
-            </button>
+              {saveState.status === "saving" ? t.configurator.saving : t.configurator.save}
+            </Button>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">{t.configurator.openInTelegram}</p>
+          )}
 
-            {isOpen && (
-              <div className="flex flex-col gap-1 border-t border-black/10 p-2 dark:border-white/15">
-                {selected && (
-                  <button
-                    type="button"
-                    className="rounded p-2 text-left text-sm text-red-500 hover:bg-black/5 dark:hover:bg-white/5"
-                    onClick={() => deselectComponent(type)}
-                  >
-                    {t.configurator.removeSelection}
-                  </button>
-                )}
-                {options.length === 0 && (
-                  <p className="p-2 text-sm text-zinc-400">{t.configurator.noCompatibleOptions}</p>
-                )}
-                {options.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    className={`flex items-center justify-between gap-2 rounded p-2 text-left text-sm hover:bg-black/5 dark:hover:bg-white/5 ${
-                      selected?.id === c.id ? "bg-black/5 dark:bg-white/10" : ""
-                    }`}
-                    onClick={() => selectComponent(type, c)}
-                  >
-                    <span>
-                      {c.brand} {c.name}
-                      {specSummary(c, t) && <span className="text-zinc-400"> · {specSummary(c, t)}</span>}
-                    </span>
-                    <span className="whitespace-nowrap">{formatPrice(Number(c.price), c.currency, locale)}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-
-      <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-4 dark:border-white/15">
-        <span className="text-lg font-semibold">{t.common.total}</span>
-        <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS", locale)}</span>
-      </div>
-
-      {auth.status === "authenticated" ? (
-        <button
-          type="button"
-          disabled={totalPrice === 0 || saveState.status === "saving"}
-          onClick={handleSave}
-          className="mt-2 rounded-full bg-foreground px-5 py-3 text-background disabled:opacity-40"
-        >
-          {saveState.status === "saving" ? t.configurator.saving : t.configurator.save}
-        </button>
-      ) : (
-        <p className="mt-2 text-center text-sm text-zinc-400">{t.configurator.openInTelegram}</p>
-      )}
-
-      {saveState.status === "saved" && (
-        <p className="text-center text-sm text-green-600">
-          {t.configurator.saved} —{" "}
-          <Link href={`/builds/${saveState.buildId}`} className="underline">
-            {t.configurator.open}
-          </Link>
-        </p>
-      )}
-      {saveState.status === "error" && (
-        <p className="text-center text-sm text-red-500">{t.configurator.saveErrorFallback}</p>
-      )}
+          {saveState.status === "saved" && (
+            <p className="text-center text-sm text-success">
+              {t.configurator.saved} —{" "}
+              <Link href={`/builds/${saveState.buildId}`} className="underline">
+                {t.configurator.open}
+              </Link>
+            </p>
+          )}
+          {saveState.status === "error" && (
+            <p className="text-center text-sm text-destructive">{t.configurator.saveErrorFallback}</p>
+          )}
+        </CardFooter>
+      </Card>
     </div>
   );
 }

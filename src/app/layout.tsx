@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Golos_Text } from "next/font/google";
 import { TelegramProvider } from "@/components/telegram-provider";
 import { LocaleProvider } from "@/components/locale-provider";
 import { Nav } from "@/components/nav";
 import { ReferralTracker } from "@/components/referral-tracker";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Poppins не поддерживает кириллицу (только latin/latin-ext/devanagari) — для ru-локали
+// добавлен Golos Text (родной для кириллицы, визуально близкий геометричный гротеск).
+// Оба заданы одной CSS-переменной через font-stack: каждый символ берёт глиф из первого
+// шрифта, где он есть, поэтому переключать шрифт по локале вручную не нужно.
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const golosText = Golos_Text({
+  variable: "--font-golos",
+  subsets: ["cyrillic", "latin"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${golosText.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
