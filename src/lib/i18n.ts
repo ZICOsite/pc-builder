@@ -23,7 +23,7 @@ export interface Dictionary {
   nav: { configurator: string; profile: string };
   common: { backToConfigurator: string; total: string };
   categories: Record<ComponentType, string>;
-  specs: { cores: string; gb: string; watts: string };
+  specs: { cores: string; gb: string; watts: string; hz: string; dpi: string };
   configurator: {
     loading: string;
     loadErrorFallback: string;
@@ -83,7 +83,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       MOUSE: "Мышь",
       HEADSET: "Гарнитура",
     },
-    specs: { cores: "ядер", gb: "ГБ", watts: "Вт" },
+    specs: { cores: "ядер", gb: "ГБ", watts: "Вт", hz: "Гц", dpi: "DPI" },
     configurator: {
       loading: "Загрузка компонентов...",
       loadErrorFallback: "Не удалось загрузить компоненты",
@@ -142,7 +142,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       MOUSE: "Mouse",
       HEADSET: "Headset",
     },
-    specs: { cores: "cores", gb: "GB", watts: "W" },
+    specs: { cores: "cores", gb: "GB", watts: "W", hz: "Hz", dpi: "DPI" },
     configurator: {
       loading: "Loading components...",
       loadErrorFallback: "Failed to load components",
@@ -201,7 +201,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       MOUSE: "Sichqoncha",
       HEADSET: "Garnitura",
     },
-    specs: { cores: "yadro", gb: "GB", watts: "Vt" },
+    specs: { cores: "yadro", gb: "GB", watts: "Vt", hz: "Gts", dpi: "DPI" },
     configurator: {
       loading: "Komponentlar yuklanmoqda...",
       loadErrorFallback: "Komponentlarni yuklab bo'lmadi",

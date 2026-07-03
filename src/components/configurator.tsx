@@ -18,6 +18,10 @@ const CATEGORY_TYPES: ComponentType[] = [
   "PSU",
   "CASE",
   "COOLING",
+  "MONITOR",
+  "KEYBOARD",
+  "MOUSE",
+  "HEADSET",
 ];
 
 function pruneIncompatible(selections: Selections): Selections {

@@ -72,6 +72,31 @@ export interface CoolingSpecs {
   height: number | null;
 }
 
+export interface MonitorSpecs {
+  sizeInches: number;
+  resolution: string;
+  refreshRateHz: number;
+  panelType?: string;
+}
+
+export interface KeyboardSpecs {
+  connection: string;
+  layout?: string;
+  switchType?: string;
+}
+
+export interface MouseSpecs {
+  connection: string;
+  dpi: number;
+  sensor?: string;
+}
+
+export interface HeadsetSpecs {
+  connection: string;
+  headsetType?: string;
+  microphone?: boolean;
+}
+
 export interface Component {
   id: number;
   type: ComponentType;
