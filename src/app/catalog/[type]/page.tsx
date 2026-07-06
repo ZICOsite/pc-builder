@@ -12,6 +12,7 @@ import { useLocale } from "@/components/locale-provider";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ProductDialog } from "@/components/product-dialog";
 
 type State =
   | { status: "loading" }
@@ -30,6 +31,7 @@ export default function CatalogCategoryPage() {
   const [state, setState] = useState<State>({ status: "loading" });
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const [selected, setSelected] = useState<Component | null>(null);
 
   const componentType = isComponentType(type) ? type : null;
 
@@ -109,24 +111,28 @@ export default function CatalogCategoryPage() {
       {visibleItems.length > 0 && (
         <div className="flex flex-col gap-2">
           {visibleItems.map((item) => (
-            <Card key={item.id} size="sm">
-              <CardContent className="flex items-center justify-between gap-2">
-                <div>
-                  <div className="font-medium">
-                    {item.brand} {item.name}
+            <button key={item.id} type="button" className="text-left" onClick={() => setSelected(item)}>
+              <Card size="sm" className="transition-colors hover:bg-muted">
+                <CardContent className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="font-medium">
+                      {item.brand} {item.name}
+                    </div>
+                    {specSummary(item, t) && (
+                      <div className="text-sm text-muted-foreground">{specSummary(item, t)}</div>
+                    )}
                   </div>
-                  {specSummary(item, t) && (
-                    <div className="text-sm text-muted-foreground">{specSummary(item, t)}</div>
-                  )}
-                </div>
-                <span className="shrink-0 whitespace-nowrap text-sm font-medium">
-                  {formatPrice(Number(item.price), item.currency, locale)}
-                </span>
-              </CardContent>
-            </Card>
+                  <span className="shrink-0 whitespace-nowrap text-sm font-medium">
+                    {formatPrice(Number(item.price), item.currency, locale)}
+                  </span>
+                </CardContent>
+              </Card>
+            </button>
           ))}
         </div>
       )}
+
+      <ProductDialog component={selected} onOpenChange={(open) => !open && setSelected(null)} />
     </div>
   );
 }

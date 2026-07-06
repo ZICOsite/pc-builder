@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { useAuth } from "@/components/telegram-provider";
 import { useIsAdmin } from "@/components/admin-provider";
 import { useLocale } from "@/components/locale-provider";
-import { cn } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const LOCALES: { code: Locale; label: string }[] = [
   { code: "ru", label: "RU" },
@@ -20,40 +35,67 @@ export function Nav() {
 
   return (
     <nav className="border-b border-border bg-background">
-      <div className="mx-auto flex w-full max-w-2xl items-center gap-4 px-4 py-3 text-sm font-medium">
-        <Link href="/" className="text-foreground hover:text-primary">
-          {t.nav.home}
-        </Link>
-        <Link href="/configurator" className="text-foreground hover:text-primary">
-          {t.nav.configurator}
-        </Link>
-        {auth.status === "authenticated" && (
-          <Link href="/profile" className="text-foreground hover:text-primary">
-            {t.nav.profile}
-          </Link>
-        )}
-        {isAdmin && (
-          <Link href="/admin" className="text-foreground hover:text-primary">
-            {t.nav.admin}
-          </Link>
-        )}
-        <span className="ml-auto flex gap-1">
-          {LOCALES.map((l) => (
-            <button
-              key={l.code}
-              type="button"
-              onClick={() => setLocale(l.code)}
-              className={cn(
-                "rounded-md px-1.5 py-0.5 text-xs transition-colors",
-                l.code === locale
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted",
+      <div className="mx-auto flex w-full max-w-2xl items-center justify-between gap-2 px-4 py-3">
+        <Sheet>
+          <SheetTrigger render={<Button variant="ghost" size="icon" />}>
+            <Menu />
+            <span className="sr-only">Menu</span>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle>PC Forge</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-1 px-4">
+              <SheetClose
+                render={<Link href="/" />}
+                nativeButton={false}
+                className="rounded-lg px-2 py-2 text-sm font-medium hover:bg-muted"
+              >
+                {t.nav.home}
+              </SheetClose>
+              <SheetClose
+                render={<Link href="/configurator" />}
+                nativeButton={false}
+                className="rounded-lg px-2 py-2 text-sm font-medium hover:bg-muted"
+              >
+                {t.nav.configurator}
+              </SheetClose>
+              {auth.status === "authenticated" && (
+                <SheetClose
+                  render={<Link href="/profile" />}
+                  nativeButton={false}
+                  className="rounded-lg px-2 py-2 text-sm font-medium hover:bg-muted"
+                >
+                  {t.nav.profile}
+                </SheetClose>
               )}
-            >
-              {l.label}
-            </button>
-          ))}
-        </span>
+              {isAdmin && (
+                <SheetClose
+                  render={<Link href="/admin" />}
+                  nativeButton={false}
+                  className="rounded-lg px-2 py-2 text-sm font-medium hover:bg-muted"
+                >
+                  {t.nav.admin}
+                </SheetClose>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <span className="font-heading text-sm font-semibold text-foreground">PC Forge</span>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
+            {LOCALES.find((l) => l.code === locale)?.label}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {LOCALES.map((l) => (
+              <DropdownMenuItem key={l.code} onClick={() => setLocale(l.code)}>
+                {l.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );
