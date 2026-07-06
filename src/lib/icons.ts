@@ -9,19 +9,21 @@ import {
   Monitor,
   Mouse,
   PcCase,
-  Cable,
   type LucideIcon,
 } from "lucide-react";
 import type { ComponentType as PcComponentType } from "./types";
 import { MotherboardIcon } from "@/components/motherboard-icon";
+import { PsuIcon } from "@/components/psu-icon";
 
-export const CATEGORY_ICONS: Record<PcComponentType, LucideIcon | typeof MotherboardIcon> = {
+type CustomIcon = typeof MotherboardIcon | typeof PsuIcon;
+
+export const CATEGORY_ICONS: Record<PcComponentType, LucideIcon | CustomIcon> = {
   CPU: Cpu,
   MOTHERBOARD: MotherboardIcon,
   RAM: MemoryStick,
   GPU: Gpu,
   STORAGE: HardDrive,
-  PSU: Cable,
+  PSU: PsuIcon,
   CASE: PcCase,
   COOLING: Fan,
   MONITOR: Monitor,
