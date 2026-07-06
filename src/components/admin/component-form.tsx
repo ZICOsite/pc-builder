@@ -359,13 +359,25 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
     onSubmit(buildInput(form));
   }
 
-  function textField(key: keyof FormState, label: string, type: "text" | "number" = "text") {
+  function textField(
+    key: keyof FormState,
+    label: string,
+    type: "text" | "number" = "text",
+    options?: { required?: boolean; min?: number },
+  ) {
+    const required = options?.required ?? true;
     return (
       <div className="flex flex-col gap-1">
-        <Label htmlFor={key}>{label}</Label>
+        <Label htmlFor={key}>
+          {label}
+          {!required && <span className="text-muted-foreground">({f.optionalHint})</span>}
+        </Label>
         <Input
           id={key}
           type={type}
+          required={required}
+          min={type === "number" ? (options?.min ?? 0) : undefined}
+          step={type === "number" ? "any" : undefined}
           value={form[key] as string}
           onChange={(e) => set(key, e.target.value as FormState[typeof key])}
         />
@@ -395,10 +407,10 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
       {textField("brand", f.brandLabel)}
       {textField("name", f.nameLabel)}
       {textField("slug", f.slugLabel)}
-      {textField("price", f.priceLabel, "number")}
+      {textField("price", f.priceLabel, "number", { min: 1 })}
       {textField("currency", f.currencyLabel)}
       {textField("stock", f.stockLabel, "number")}
-      {textField("imageUrl", f.imageUrlLabel)}
+      {textField("imageUrl", f.imageUrlLabel, "text", { required: false })}
 
       <Label className="flex items-center gap-2">
         <input
@@ -414,23 +426,23 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
 
       {form.type === "CPU" && (
         <>
-          {textField("cores", f.fields.cores, "number")}
-          {textField("threads", f.fields.threads, "number")}
+          {textField("cores", f.fields.cores, "number", { min: 1 })}
+          {textField("threads", f.fields.threads, "number", { min: 1 })}
           {textField("socket", f.fields.socket)}
-          {textField("tdp", f.fields.tdp, "number")}
-          {textField("baseClock", f.fields.baseClock, "number")}
-          {textField("boostClock", f.fields.boostClock, "number")}
+          {textField("tdp", f.fields.tdp, "number", { min: 1 })}
+          {textField("baseClock", f.fields.baseClock, "number", { min: 0.1 })}
+          {textField("boostClock", f.fields.boostClock, "number", { min: 0.1 })}
         </>
       )}
 
       {form.type === "GPU" && (
         <>
-          {textField("vram", f.fields.vram, "number")}
+          {textField("vram", f.fields.vram, "number", { min: 1 })}
           {textField("memoryType", f.fields.memoryType)}
-          {textField("baseClock", f.fields.baseClock, "number")}
-          {textField("boostClock", f.fields.boostClock, "number")}
-          {textField("tdp", f.fields.tdp, "number")}
-          {textField("length", f.fields.length, "number")}
+          {textField("baseClock", f.fields.baseClock, "number", { min: 0.1 })}
+          {textField("boostClock", f.fields.boostClock, "number", { min: 0.1 })}
+          {textField("tdp", f.fields.tdp, "number", { min: 1 })}
+          {textField("length", f.fields.length, "number", { min: 1 })}
         </>
       )}
 
@@ -440,32 +452,32 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
           {textField("chipset", f.fields.chipset)}
           {textField("formFactor", f.fields.formFactor)}
           {textField("memoryType", f.fields.memoryType)}
-          {textField("memorySlots", f.fields.memorySlots, "number")}
-          {textField("maxMemoryGb", f.fields.maxMemoryGb, "number")}
+          {textField("memorySlots", f.fields.memorySlots, "number", { min: 1 })}
+          {textField("maxMemoryGb", f.fields.maxMemoryGb, "number", { min: 1 })}
         </>
       )}
 
       {form.type === "RAM" && (
         <>
-          {textField("capacityGb", f.fields.capacityGb, "number")}
-          {textField("speedMhz", f.fields.speedMhz, "number")}
+          {textField("capacityGb", f.fields.capacityGb, "number", { min: 1 })}
+          {textField("speedMhz", f.fields.speedMhz, "number", { min: 1 })}
           {textField("memoryType", f.fields.memoryType)}
         </>
       )}
 
       {form.type === "STORAGE" && (
         <>
-          {textField("capacityGb", f.fields.capacityGb, "number")}
+          {textField("capacityGb", f.fields.capacityGb, "number", { min: 1 })}
           {textField("variantType", f.fields.storageType)}
           {textField("interfaceType", f.fields.interfaceType)}
-          {textField("readSpeed", f.fields.readSpeed, "number")}
-          {textField("writeSpeed", f.fields.writeSpeed, "number")}
+          {textField("readSpeed", f.fields.readSpeed, "number", { required: false })}
+          {textField("writeSpeed", f.fields.writeSpeed, "number", { required: false })}
         </>
       )}
 
       {form.type === "PSU" && (
         <>
-          {textField("wattage", f.fields.wattage, "number")}
+          {textField("wattage", f.fields.wattage, "number", { min: 1 })}
           {textField("efficiency", f.fields.efficiency)}
           {textField("modular", f.fields.modular)}
         </>
@@ -474,8 +486,8 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
       {form.type === "CASE" && (
         <>
           {textField("formFactor", f.fields.formFactor)}
-          {textField("maxGpuLength", f.fields.maxGpuLength, "number")}
-          {textField("maxCoolerHeight", f.fields.maxCoolerHeight, "number")}
+          {textField("maxGpuLength", f.fields.maxGpuLength, "number", { min: 1 })}
+          {textField("maxCoolerHeight", f.fields.maxCoolerHeight, "number", { min: 1 })}
         </>
       )}
 
@@ -483,40 +495,40 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
         <>
           {textField("variantType", f.fields.coolingType)}
           {textField("socket", f.fields.socket)}
-          {textField("tdpSupport", f.fields.tdpSupport, "number")}
-          {textField("height", f.fields.height, "number")}
+          {textField("tdpSupport", f.fields.tdpSupport, "number", { min: 1 })}
+          {textField("height", f.fields.height, "number", { required: false })}
         </>
       )}
 
       {form.type === "MONITOR" && (
         <>
-          {textField("sizeInches", f.fields.sizeInches, "number")}
+          {textField("sizeInches", f.fields.sizeInches, "number", { min: 1 })}
           {textField("resolution", f.fields.resolution)}
-          {textField("refreshRateHz", f.fields.refreshRateHz, "number")}
-          {textField("panelType", f.fields.panelType)}
+          {textField("refreshRateHz", f.fields.refreshRateHz, "number", { min: 1 })}
+          {textField("panelType", f.fields.panelType, "text", { required: false })}
         </>
       )}
 
       {form.type === "KEYBOARD" && (
         <>
           {textField("connection", f.fields.connection)}
-          {textField("layout", f.fields.layout)}
-          {textField("switchType", f.fields.switchType)}
+          {textField("layout", f.fields.layout, "text", { required: false })}
+          {textField("switchType", f.fields.switchType, "text", { required: false })}
         </>
       )}
 
       {form.type === "MOUSE" && (
         <>
           {textField("connection", f.fields.connection)}
-          {textField("dpi", f.fields.dpi, "number")}
-          {textField("sensor", f.fields.sensor)}
+          {textField("dpi", f.fields.dpi, "number", { min: 1 })}
+          {textField("sensor", f.fields.sensor, "text", { required: false })}
         </>
       )}
 
       {form.type === "HEADSET" && (
         <>
           {textField("connection", f.fields.connection)}
-          {textField("headsetType", f.fields.headsetType)}
+          {textField("headsetType", f.fields.headsetType, "text", { required: false })}
           <Label className="flex items-center gap-2">
             <input
               type="checkbox"

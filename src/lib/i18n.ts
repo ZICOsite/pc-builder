@@ -158,6 +158,7 @@ export interface Dictionary {
       saving: string;
       saveErrorFallback: string;
       cancel: string;
+      optionalHint: string;
       fields: AdminFieldLabels;
     };
   };
@@ -276,6 +277,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         saving: "Сохранение...",
         saveErrorFallback: "Не удалось сохранить товар",
         cancel: "Отмена",
+        optionalHint: "необязательно",
         fields: {
           cores: "Ядра",
           threads: "Потоки",
@@ -431,6 +433,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         saving: "Saving...",
         saveErrorFallback: "Failed to save product",
         cancel: "Cancel",
+        optionalHint: "optional",
         fields: {
           cores: "Cores",
           threads: "Threads",
@@ -586,6 +589,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         saving: "Saqlanmoqda...",
         saveErrorFallback: "Tovarni saqlab bo'lmadi",
         cancel: "Bekor qilish",
+        optionalHint: "ixtiyoriy",
         fields: {
           cores: "Yadrolar",
           threads: "Oqimlar",
