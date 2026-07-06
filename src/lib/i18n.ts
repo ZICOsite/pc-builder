@@ -31,6 +31,10 @@ export interface Dictionary {
     loadErrorFallback: string;
     empty: string;
     notFound: string;
+    searchPlaceholder: string;
+    noResults: string;
+    sortPriceAsc: string;
+    sortPriceDesc: string;
   };
   configurator: {
     loading: string;
@@ -99,6 +103,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Не удалось загрузить товары",
       empty: "В этой категории пока нет товаров",
       notFound: "Категория не найдена",
+      searchPlaceholder: "Поиск по названию или бренду",
+      noResults: "Ничего не найдено",
+      sortPriceAsc: "Сначала дешевле",
+      sortPriceDesc: "Сначала дороже",
     },
     configurator: {
       loading: "Загрузка компонентов...",
@@ -166,6 +174,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Failed to load products",
       empty: "No products in this category yet",
       notFound: "Category not found",
+      searchPlaceholder: "Search by name or brand",
+      noResults: "No results found",
+      sortPriceAsc: "Price: low to high",
+      sortPriceDesc: "Price: high to low",
     },
     configurator: {
       loading: "Loading components...",
@@ -233,6 +245,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Tovarlarni yuklab bo'lmadi",
       empty: "Bu kategoriyada hozircha tovarlar yo'q",
       notFound: "Kategoriya topilmadi",
+      searchPlaceholder: "Nomi yoki brendi bo'yicha qidirish",
+      noResults: "Hech narsa topilmadi",
+      sortPriceAsc: "Avval arzoni",
+      sortPriceDesc: "Avval qimmati",
     },
     configurator: {
       loading: "Komponentlar yuklanmoqda...",
