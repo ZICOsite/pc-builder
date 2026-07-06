@@ -6,6 +6,7 @@ import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { getProfile, getReferralStats } from "@/lib/api";
 import type { ReferralStats, UserProfile } from "@/lib/types";
+import { Card, CardContent } from "@/components/ui/card";
 
 type State =
   | { status: "loading" }
@@ -25,19 +26,19 @@ export default function ProfilePage() {
   }, [auth]);
 
   if (auth.status === "loading") {
-    return <p className="p-4 text-center">{t.profile.loading}</p>;
+    return <p className="p-4 text-center text-muted-foreground">{t.profile.loading}</p>;
   }
 
   if (auth.status !== "authenticated") {
-    return <p className="p-4 text-center text-zinc-400">{t.profile.openInTelegram}</p>;
+    return <p className="p-4 text-center text-muted-foreground">{t.profile.openInTelegram}</p>;
   }
 
   if (state.status === "loading") {
-    return <p className="p-4 text-center">{t.profile.loadingProfile}</p>;
+    return <p className="p-4 text-center text-muted-foreground">{t.profile.loadingProfile}</p>;
   }
 
   if (state.status === "error") {
-    return <p className="p-4 text-center text-red-500">{t.profile.loadErrorFallback}</p>;
+    return <p className="p-4 text-center text-destructive">{t.profile.loadErrorFallback}</p>;
   }
 
   const { profile, stats } = state;
@@ -45,40 +46,43 @@ export default function ProfilePage() {
     [profile.firstName, profile.lastName].filter(Boolean).join(" ") || profile.username || t.profile.noName;
 
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-4 p-4">
-      <Link href="/" className="text-sm text-zinc-400 underline">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
+      <Link href="/" className="text-sm text-muted-foreground underline">
         {t.common.backToConfigurator}
       </Link>
 
-      <div className="rounded-lg border border-black/10 p-4 dark:border-white/15">
-        <div className="text-lg font-semibold">{displayName}</div>
-        {profile.username && <div className="text-sm text-zinc-400">@{profile.username}</div>}
-      </div>
+      <Card>
+        <CardContent>
+          <div className="text-lg font-semibold">{displayName}</div>
+          {profile.username && <div className="text-sm text-muted-foreground">@{profile.username}</div>}
+        </CardContent>
+      </Card>
 
-      <div className="rounded-lg border border-black/10 p-4 dark:border-white/15">
-        <div className="text-sm text-zinc-500">{t.profile.discountTitle}</div>
-        <div className="text-2xl font-semibold">{stats.discountPercent}%</div>
-        <div className="text-sm text-zinc-400">
-          {t.profile.referralsProgress(stats.completedReferrals, stats.remainingSlots)}
-        </div>
-      </div>
+      <Card>
+        <CardContent>
+          <div className="text-sm text-muted-foreground">{t.profile.discountTitle}</div>
+          <div className="text-2xl font-semibold">{stats.discountPercent}%</div>
+          <div className="text-sm text-muted-foreground">
+            {t.profile.referralsProgress(stats.completedReferrals, stats.remainingSlots)}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="flex flex-col gap-2">
-        <div className="text-sm text-zinc-500">{t.profile.invitedTitle}</div>
+        <div className="text-sm text-muted-foreground">{t.profile.invitedTitle}</div>
         {stats.referrals.length === 0 && (
-          <p className="text-sm text-zinc-400">{t.profile.noReferralsYet}</p>
+          <p className="text-sm text-muted-foreground">{t.profile.noReferralsYet}</p>
         )}
         {stats.referrals.map((r) => (
-          <div
-            key={r.id}
-            className="flex items-center justify-between gap-2 rounded-lg border border-black/10 p-3 text-sm dark:border-white/15"
-          >
-            <div>
-              <div>{r.referredUser.firstName || r.referredUser.username || t.profile.unknownUser(r.referredUserId)}</div>
-              <div className="text-zinc-400">{t.profile.viaBuild(r.build.name)}</div>
-            </div>
-            <span className="whitespace-nowrap text-zinc-400">{t.profile.status[r.status]}</span>
-          </div>
+          <Card key={r.id} size="sm">
+            <CardContent className="flex items-center justify-between gap-2">
+              <div>
+                <div>{r.referredUser.firstName || r.referredUser.username || t.profile.unknownUser(r.referredUserId)}</div>
+                <div className="text-sm text-muted-foreground">{t.profile.viaBuild(r.build.name)}</div>
+              </div>
+              <span className="whitespace-nowrap text-sm text-muted-foreground">{t.profile.status[r.status]}</span>
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>
