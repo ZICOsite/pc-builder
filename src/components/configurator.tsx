@@ -2,11 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 import { getComponents, saveBuild } from "@/lib/api";
 import { isCompatible, type Selections } from "@/lib/compatibility";
 import { formatPrice, specSummary } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { COMPONENT_TYPES, type Component, type ComponentType } from "@/lib/types";
+import { CATEGORY_ICONS } from "@/lib/icons";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import {
@@ -57,10 +59,13 @@ export function Configurator() {
     () => Object.values(selections).reduce((sum, c) => sum + Number(c.price), 0),
     [selections],
   );
+  const selectedCount = Object.keys(selections).length;
+  const progressPercent = Math.round((selectedCount / COMPONENT_TYPES.length) * 100);
 
   function selectComponent(type: ComponentType, component: Component) {
-    setSelections((prev) => pruneIncompatible({ ...prev, [type]: component }));
-    setOpenCategory(null);
+    const next = pruneIncompatible({ ...selections, [type]: component });
+    setSelections(next);
+    setOpenCategory(COMPONENT_TYPES.find((t) => t !== type && !next[t]) ?? null);
   }
 
   function deselectComponent(type: ComponentType) {
@@ -95,6 +100,30 @@ export function Configurator() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
+      <Card size="sm">
+        <CardContent className="flex flex-col gap-2">
+          <div className="flex items-center justify-between text-sm">
+            {progressPercent === 100 ? (
+              <span className="flex items-center gap-1.5 font-medium text-success">
+                <CheckCircle2 className="size-4" />
+                {t.configurator.allSelected}
+              </span>
+            ) : (
+              <span className="font-medium text-muted-foreground">
+                {t.configurator.progressLabel(selectedCount, COMPONENT_TYPES.length)}
+              </span>
+            )}
+            <span className="font-semibold text-primary">{progressPercent}%</span>
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="gap-0 py-0">
         <CardContent className="px-4 py-0">
           <Accordion
@@ -105,17 +134,24 @@ export function Configurator() {
               const label = t.categories[type];
               const selected = selections[type];
               const options = (componentsByType[type] ?? []).filter((c) => isCompatible(type, c, selections));
+              const Icon = CATEGORY_ICONS[type];
 
               return (
                 <AccordionItem key={type} value={type}>
                   <AccordionTrigger>
-                    <div className="flex w-full items-center justify-between gap-2 pr-2">
-                      <div>
+                    <div className="flex w-full items-center gap-3 pr-2">
+                      <Icon
+                        className={cn(
+                          "size-5 shrink-0 transition-colors",
+                          selected ? "text-primary" : "text-muted-foreground",
+                        )}
+                      />
+                      <div className="min-w-0 flex-1 text-left">
                         <div className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                           {label}
                         </div>
                         {selected ? (
-                          <div className="font-semibold">
+                          <div className="truncate font-semibold">
                             {selected.brand} {selected.name}
                           </div>
                         ) : (
@@ -123,9 +159,12 @@ export function Configurator() {
                         )}
                       </div>
                       {selected && (
-                        <Badge variant="secondary" className="shrink-0">
-                          {formatPrice(Number(selected.price), selected.currency, locale)}
-                        </Badge>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <CheckCircle2 className="size-4 text-success" />
+                          <Badge variant="secondary" className="shrink-0">
+                            {formatPrice(Number(selected.price), selected.currency, locale)}
+                          </Badge>
+                        </div>
                       )}
                     </div>
                   </AccordionTrigger>
@@ -179,7 +218,9 @@ export function Configurator() {
       <Card>
         <CardContent className="flex items-center justify-between">
           <span className="text-lg font-semibold">{t.common.total}</span>
-          <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS", locale)}</span>
+          <span key={totalPrice} className="animate-in fade-in-0 zoom-in-95 text-lg font-semibold duration-300">
+            {formatPrice(totalPrice, "UZS", locale)}
+          </span>
         </CardContent>
         <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
           {auth.status === "authenticated" ? (
