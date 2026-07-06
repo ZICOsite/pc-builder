@@ -2,21 +2,16 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 import { getComponents, saveBuild } from "@/lib/api";
 import { isCompatible, type Selections } from "@/lib/compatibility";
-import { formatPrice, specSummary } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { COMPONENT_TYPES, type Component, type ComponentType } from "@/lib/types";
 import { CATEGORY_ICONS } from "@/lib/icons";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { ComponentPickerDialog } from "@/components/component-picker-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -41,7 +36,7 @@ export function Configurator() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [selections, setSelections] = useState<Selections>({});
-  const [openCategory, setOpenCategory] = useState<ComponentType | null>(null);
+  const [pickerType, setPickerType] = useState<ComponentType | null>(null);
   const [saveState, setSaveState] = useState<
     { status: "idle" } | { status: "saving" } | { status: "saved"; buildId: string } | { status: "error" }
   >({ status: "idle" });
@@ -65,7 +60,7 @@ export function Configurator() {
   function selectComponent(type: ComponentType, component: Component) {
     const next = pruneIncompatible({ ...selections, [type]: component });
     setSelections(next);
-    setOpenCategory(COMPONENT_TYPES.find((t) => t !== type && !next[t]) ?? null);
+    setPickerType(COMPONENT_TYPES.find((t) => t !== type && !next[t]) ?? null);
   }
 
   function deselectComponent(type: ComponentType) {
@@ -125,95 +120,69 @@ export function Configurator() {
       </Card>
 
       <Card className="gap-0 py-0">
-        <CardContent className="px-4 py-0">
-          <Accordion
-            value={openCategory ? [openCategory] : []}
-            onValueChange={(value) => setOpenCategory((value[0] as ComponentType | undefined) ?? null)}
-          >
-            {COMPONENT_TYPES.map((type) => {
-              const label = t.categories[type];
-              const selected = selections[type];
-              const options = (componentsByType[type] ?? []).filter((c) => isCompatible(type, c, selections));
-              const Icon = CATEGORY_ICONS[type];
+        <CardContent className="divide-y divide-border px-0 py-0">
+          {COMPONENT_TYPES.map((type) => {
+            const label = t.categories[type];
+            const selected = selections[type];
+            const Icon = CATEGORY_ICONS[type];
 
-              return (
-                <AccordionItem key={type} value={type}>
-                  <AccordionTrigger>
-                    <div className="flex w-full items-center gap-3 pr-2">
-                      <Icon
-                        className={cn(
-                          "size-5 shrink-0 transition-colors",
-                          selected ? "text-primary" : "text-muted-foreground",
-                        )}
-                      />
-                      <div className="min-w-0 flex-1 text-left">
-                        <div className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-                          {label}
-                        </div>
-                        {selected ? (
-                          <div className="truncate font-semibold">
-                            {selected.brand} {selected.name}
-                          </div>
-                        ) : (
-                          <div className="text-sm text-muted-foreground">{t.configurator.notSelected}</div>
-                        )}
+            return (
+              <div key={type} className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setPickerType(type)}
+                  className="flex min-w-0 flex-1 items-center gap-3 p-4 text-left transition-colors hover:bg-muted"
+                >
+                  <Icon
+                    className={cn(
+                      "size-5 shrink-0 transition-colors",
+                      selected ? "text-primary" : "text-muted-foreground",
+                    )}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</div>
+                    {selected ? (
+                      <div className="truncate font-semibold">
+                        {selected.brand} {selected.name}
                       </div>
-                      {selected && (
-                        <div className="flex shrink-0 items-center gap-1.5">
-                          <CheckCircle2 className="size-4 text-success" />
-                          <Badge variant="secondary" className="shrink-0">
-                            {formatPrice(Number(selected.price), selected.currency, locale)}
-                          </Badge>
-                        </div>
-                      )}
+                    ) : (
+                      <div className="text-sm text-muted-foreground">{t.configurator.notSelected}</div>
+                    )}
+                  </div>
+                  {selected && (
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <CheckCircle2 className="size-4 text-success" />
+                      <Badge variant="secondary" className="shrink-0">
+                        {formatPrice(Number(selected.price), selected.currency, locale)}
+                      </Badge>
                     </div>
-                  </AccordionTrigger>
-
-                  <AccordionContent>
-                    <div className="flex flex-col gap-1">
-                      {selected && (
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="sm"
-                          className="justify-start"
-                          onClick={() => deselectComponent(type)}
-                        >
-                          {t.configurator.removeSelection}
-                        </Button>
-                      )}
-                      {options.length === 0 && (
-                        <p className="p-2 text-sm text-muted-foreground">{t.configurator.noCompatibleOptions}</p>
-                      )}
-                      {options.map((c) => (
-                        <button
-                          key={c.id}
-                          type="button"
-                          className={cn(
-                            "flex items-center justify-between gap-2 rounded-lg p-2 text-left text-sm transition-colors hover:bg-muted",
-                            selected?.id === c.id && "bg-accent text-accent-foreground",
-                          )}
-                          onClick={() => selectComponent(type, c)}
-                        >
-                          <span>
-                            {c.brand} {c.name}
-                            {specSummary(c, t) && (
-                              <span className="text-muted-foreground"> · {specSummary(c, t)}</span>
-                            )}
-                          </span>
-                          <span className="shrink-0 whitespace-nowrap">
-                            {formatPrice(Number(c.price), c.currency, locale)}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
+                  )}
+                </button>
+                {selected && (
+                  <button
+                    type="button"
+                    onClick={() => deselectComponent(type)}
+                    className="mr-2 shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    title={t.configurator.removeSelection}
+                  >
+                    <X className="size-4" />
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </CardContent>
       </Card>
+
+      <ComponentPickerDialog
+        type={pickerType}
+        options={(componentsByType[pickerType as ComponentType] ?? []).filter((c) =>
+          isCompatible(pickerType as ComponentType, c, selections),
+        )}
+        selectedId={pickerType ? selections[pickerType]?.id : undefined}
+        onOpenChange={(open) => !open && setPickerType(null)}
+        onSelect={(component) => pickerType && selectComponent(pickerType, component)}
+      />
 
       <Card>
         <CardContent className="flex items-center justify-between">

@@ -91,6 +91,7 @@ export interface Dictionary {
     saveErrorFallback: string;
     progressLabel: (selected: number, total: number) => string;
     allSelected: string;
+    pageOf: (page: number, total: number) => string;
   };
   buildPage: {
     loadingBuild: string;
@@ -211,6 +212,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       saveErrorFallback: "Не удалось сохранить сборку",
       progressLabel: (selected, total) => `Выбрано ${selected} из ${total}`,
       allSelected: "Все категории заполнены",
+      pageOf: (page, total) => `Стр. ${page} из ${total}`,
     },
     buildPage: {
       loadingBuild: "Загрузка сборки...",
@@ -369,6 +371,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       saveErrorFallback: "Failed to save build",
       progressLabel: (selected, total) => `${selected} of ${total} selected`,
       allSelected: "All categories filled in",
+      pageOf: (page, total) => `Page ${page} of ${total}`,
     },
     buildPage: {
       loadingBuild: "Loading build...",
@@ -527,6 +530,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       saveErrorFallback: "Yig'ilmani saqlab bo'lmadi",
       progressLabel: (selected, total) => `${total} tadan ${selected} tasi tanlandi`,
       allSelected: "Barcha kategoriyalar to'ldirildi",
+      pageOf: (page, total) => `${page}/${total}-sahifa`,
     },
     buildPage: {
       loadingBuild: "Yig'ilma yuklanmoqda...",
