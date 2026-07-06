@@ -12,6 +12,21 @@ export type ComponentType =
   | "MOUSE"
   | "HEADSET";
 
+export const COMPONENT_TYPES: ComponentType[] = [
+  "CPU",
+  "MOTHERBOARD",
+  "RAM",
+  "GPU",
+  "STORAGE",
+  "PSU",
+  "CASE",
+  "COOLING",
+  "MONITOR",
+  "KEYBOARD",
+  "MOUSE",
+  "HEADSET",
+];
+
 export interface CpuSpecs {
   cores: number;
   threads: number;

@@ -71,7 +71,7 @@ export default function BuildPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
-      <Link href="/" className="text-sm text-muted-foreground underline">
+      <Link href="/configurator" className="text-sm text-muted-foreground underline">
         {t.common.backToConfigurator}
       </Link>
       <h1 className="text-xl font-semibold">{build.name}</h1>

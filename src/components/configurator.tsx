@@ -6,7 +6,7 @@ import { getComponents, saveBuild } from "@/lib/api";
 import { isCompatible, type Selections } from "@/lib/compatibility";
 import { formatPrice, specSummary } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { Component, ComponentType } from "@/lib/types";
+import { COMPONENT_TYPES, type Component, type ComponentType } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import {
@@ -18,21 +18,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-
-const CATEGORY_TYPES: ComponentType[] = [
-  "CPU",
-  "MOTHERBOARD",
-  "RAM",
-  "GPU",
-  "STORAGE",
-  "PSU",
-  "CASE",
-  "COOLING",
-  "MONITOR",
-  "KEYBOARD",
-  "MOUSE",
-  "HEADSET",
-];
 
 function pruneIncompatible(selections: Selections): Selections {
   const next = { ...selections };
@@ -60,7 +45,7 @@ export function Configurator() {
   >({ status: "idle" });
 
   useEffect(() => {
-    Promise.all(CATEGORY_TYPES.map((type) => getComponents(type).then((list) => [type, list] as const)))
+    Promise.all(COMPONENT_TYPES.map((type) => getComponents(type).then((list) => [type, list] as const)))
       .then((entries) => {
         setComponentsByType(Object.fromEntries(entries));
       })
@@ -116,7 +101,7 @@ export function Configurator() {
             value={openCategory ? [openCategory] : []}
             onValueChange={(value) => setOpenCategory((value[0] as ComponentType | undefined) ?? null)}
           >
-            {CATEGORY_TYPES.map((type) => {
+            {COMPONENT_TYPES.map((type) => {
               const label = t.categories[type];
               const selected = selections[type];
               const options = (componentsByType[type] ?? []).filter((c) => isCompatible(type, c, selections));

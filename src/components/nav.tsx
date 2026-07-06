@@ -20,6 +20,9 @@ export function Nav() {
     <nav className="border-b border-border bg-background">
       <div className="mx-auto flex w-full max-w-2xl items-center gap-4 px-4 py-3 text-sm font-medium">
         <Link href="/" className="text-foreground hover:text-primary">
+          {t.nav.home}
+        </Link>
+        <Link href="/configurator" className="text-foreground hover:text-primary">
           {t.nav.configurator}
         </Link>
         {auth.status === "authenticated" && (

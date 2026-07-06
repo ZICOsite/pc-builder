@@ -20,10 +20,18 @@ export function normalizeLocale(code?: string | null): Locale | null {
 }
 
 export interface Dictionary {
-  nav: { configurator: string; profile: string };
+  nav: { home: string; configurator: string; profile: string };
   common: { backToConfigurator: string; total: string };
   categories: Record<ComponentType, string>;
   specs: { cores: string; gb: string; watts: string; hz: string; dpi: string };
+  home: { title: string; subtitle: string };
+  catalog: {
+    backToCatalog: string;
+    loading: string;
+    loadErrorFallback: string;
+    empty: string;
+    notFound: string;
+  };
   configurator: {
     loading: string;
     loadErrorFallback: string;
@@ -67,7 +75,7 @@ export interface Dictionary {
 
 export const dictionaries: Record<Locale, Dictionary> = {
   ru: {
-    nav: { configurator: "Конфигуратор", profile: "Профиль" },
+    nav: { home: "Главная", configurator: "Конфигуратор", profile: "Профиль" },
     common: { backToConfigurator: "← К конфигуратору", total: "Итого" },
     categories: {
       CPU: "Процессор",
@@ -84,6 +92,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Гарнитура",
     },
     specs: { cores: "ядер", gb: "ГБ", watts: "Вт", hz: "Гц", dpi: "DPI" },
+    home: { title: "Каталог", subtitle: "Выберите категорию, чтобы посмотреть товары" },
+    catalog: {
+      backToCatalog: "← К каталогу",
+      loading: "Загрузка товаров...",
+      loadErrorFallback: "Не удалось загрузить товары",
+      empty: "В этой категории пока нет товаров",
+      notFound: "Категория не найдена",
+    },
     configurator: {
       loading: "Загрузка компонентов...",
       loadErrorFallback: "Не удалось загрузить компоненты",
@@ -126,7 +142,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     errors: { authFailed: "Ошибка авторизации" },
   },
   en: {
-    nav: { configurator: "Configurator", profile: "Profile" },
+    nav: { home: "Home", configurator: "Configurator", profile: "Profile" },
     common: { backToConfigurator: "← Back to configurator", total: "Total" },
     categories: {
       CPU: "Processor",
@@ -143,6 +159,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Headset",
     },
     specs: { cores: "cores", gb: "GB", watts: "W", hz: "Hz", dpi: "DPI" },
+    home: { title: "Catalog", subtitle: "Pick a category to browse products" },
+    catalog: {
+      backToCatalog: "← Back to catalog",
+      loading: "Loading products...",
+      loadErrorFallback: "Failed to load products",
+      empty: "No products in this category yet",
+      notFound: "Category not found",
+    },
     configurator: {
       loading: "Loading components...",
       loadErrorFallback: "Failed to load components",
@@ -185,7 +209,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     errors: { authFailed: "Authentication failed" },
   },
   uz: {
-    nav: { configurator: "Konfigurator", profile: "Profil" },
+    nav: { home: "Bosh sahifa", configurator: "Konfigurator", profile: "Profil" },
     common: { backToConfigurator: "← Konfiguratorga qaytish", total: "Jami" },
     categories: {
       CPU: "Protsessor",
@@ -202,6 +226,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Garnitura",
     },
     specs: { cores: "yadro", gb: "GB", watts: "Vt", hz: "Gts", dpi: "DPI" },
+    home: { title: "Katalog", subtitle: "Tovarlarni ko'rish uchun kategoriyani tanlang" },
+    catalog: {
+      backToCatalog: "← Katalogga qaytish",
+      loading: "Tovarlar yuklanmoqda...",
+      loadErrorFallback: "Tovarlarni yuklab bo'lmadi",
+      empty: "Bu kategoriyada hozircha tovarlar yo'q",
+      notFound: "Kategoriya topilmadi",
+    },
     configurator: {
       loading: "Komponentlar yuklanmoqda...",
       loadErrorFallback: "Komponentlarni yuklab bo'lmadi",
