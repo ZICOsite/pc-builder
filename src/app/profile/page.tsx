@@ -4,24 +4,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
-import { getProfile, getReferralStats } from "@/lib/api";
-import type { ReferralStats, UserProfile } from "@/lib/types";
+import { getMyBuilds, getProfile, getReferralStats } from "@/lib/api";
+import { formatPrice } from "@/lib/format";
+import type { Build, ReferralStats, UserProfile } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 type State =
   | { status: "loading" }
   | { status: "error" }
-  | { status: "ready"; profile: UserProfile; stats: ReferralStats };
+  | { status: "ready"; profile: UserProfile; stats: ReferralStats; builds: Build[] };
 
 export default function ProfilePage() {
   const auth = useAuth();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const [state, setState] = useState<State>({ status: "loading" });
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
-    Promise.all([getProfile(auth.accessToken), getReferralStats(auth.accessToken)])
-      .then(([profile, stats]) => setState({ status: "ready", profile, stats }))
+    Promise.all([getProfile(auth.accessToken), getReferralStats(auth.accessToken), getMyBuilds(auth.accessToken)])
+      .then(([profile, stats, builds]) => setState({ status: "ready", profile, stats, builds }))
       .catch(() => setState({ status: "error" }));
   }, [auth]);
 
@@ -41,7 +43,7 @@ export default function ProfilePage() {
     return <p className="p-4 text-center text-destructive">{t.profile.loadErrorFallback}</p>;
   }
 
-  const { profile, stats } = state;
+  const { profile, stats, builds } = state;
   const displayName =
     [profile.firstName, profile.lastName].filter(Boolean).join(" ") || profile.username || t.profile.noName;
 
@@ -67,6 +69,31 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="flex flex-col gap-2">
+        <div className="text-sm text-muted-foreground">{t.profile.myBuildsTitle}</div>
+        {builds.length === 0 && <p className="text-sm text-muted-foreground">{t.profile.noBuilds}</p>}
+        {builds.map((build) => (
+          <Link key={build.id} href={`/builds/${build.id}`}>
+            <Card size="sm" className="transition-colors hover:bg-muted">
+              <CardContent className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="font-medium">{build.name}</div>
+                  <div className="text-sm text-muted-foreground">{t.profile.itemsCount(build.items.length)}</div>
+                </div>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <span className="text-sm font-medium">
+                    {formatPrice(Number(build.totalPrice ?? 0), "UZS", locale)}
+                  </span>
+                  <Badge variant={build.isPublic ? "secondary" : "outline"}>
+                    {build.isPublic ? t.profile.publicBadge : t.profile.privateBadge}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
 
       <div className="flex flex-col gap-2">
         <div className="text-sm text-muted-foreground">{t.profile.invitedTitle}</div>

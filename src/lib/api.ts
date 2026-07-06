@@ -85,6 +85,10 @@ export async function saveBuild(
   return apiFetch(`/builds/${build.id}`, accessToken);
 }
 
+export async function getMyBuilds(accessToken: string): Promise<Build[]> {
+  return apiFetch("/builds", accessToken);
+}
+
 export async function getBuild(id: string, accessToken?: string): Promise<Build> {
   const res = await fetch(`${API_BASE_URL}/builds/${id}`, {
     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,

@@ -114,6 +114,11 @@ export interface Dictionary {
     viaBuild: (name: string) => string;
     unknownUser: (id: number) => string;
     status: { PENDING: string; COMPLETED: string; CANCELLED: string };
+    myBuildsTitle: string;
+    noBuilds: string;
+    itemsCount: (count: number) => string;
+    publicBadge: string;
+    privateBadge: string;
   };
   errors: { authFailed: string };
   admin: {
@@ -227,6 +232,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       viaBuild: (name) => `через сборку «${name}»`,
       unknownUser: (id) => `Пользователь #${id}`,
       status: { PENDING: "Ожидание", COMPLETED: "Начислено", CANCELLED: "Отменено" },
+      myBuildsTitle: "Мои сборки",
+      noBuilds: "Пока нет сохранённых сборок — соберите ПК в конфигураторе",
+      itemsCount: (count) => `${count} компонентов`,
+      publicBadge: "Опубликована",
+      privateBadge: "Приватная",
     },
     errors: { authFailed: "Ошибка авторизации" },
     admin: {
@@ -377,6 +387,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       viaBuild: (name) => `via build "${name}"`,
       unknownUser: (id) => `User #${id}`,
       status: { PENDING: "Pending", COMPLETED: "Credited", CANCELLED: "Cancelled" },
+      myBuildsTitle: "My builds",
+      noBuilds: "No saved builds yet — put together a PC in the configurator",
+      itemsCount: (count) => `${count} components`,
+      publicBadge: "Published",
+      privateBadge: "Private",
     },
     errors: { authFailed: "Authentication failed" },
     admin: {
@@ -527,6 +542,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       viaBuild: (name) => `«${name}» yig'ilmasi orqali`,
       unknownUser: (id) => `Foydalanuvchi #${id}`,
       status: { PENDING: "Kutilmoqda", COMPLETED: "Hisoblandi", CANCELLED: "Bekor qilindi" },
+      myBuildsTitle: "Mening yig'ilmalarim",
+      noBuilds: "Hozircha saqlangan yig'ilmalar yo'q — konfiguratorda PK yig'ing",
+      itemsCount: (count) => `${count} komponent`,
+      publicBadge: "Nashr qilingan",
+      privateBadge: "Shaxsiy",
     },
     errors: { authFailed: "Avtorizatsiya xatosi" },
     admin: {
