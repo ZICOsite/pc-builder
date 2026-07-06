@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Golos_Text } from "next/font/google";
 import { TelegramProvider } from "@/components/telegram-provider";
 import { LocaleProvider } from "@/components/locale-provider";
+import { AdminProvider } from "@/components/admin-provider";
 import { Nav } from "@/components/nav";
 import { ReferralTracker } from "@/components/referral-tracker";
 import "./globals.css";
@@ -39,9 +40,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LocaleProvider>
           <TelegramProvider>
-            <ReferralTracker />
-            <Nav />
-            {children}
+            <AdminProvider>
+              <ReferralTracker />
+              <Nav />
+              {children}
+            </AdminProvider>
           </TelegramProvider>
         </LocaleProvider>
       </body>

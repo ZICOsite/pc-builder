@@ -19,8 +19,49 @@ export function normalizeLocale(code?: string | null): Locale | null {
   return null;
 }
 
+export interface AdminFieldLabels {
+  cores: string;
+  threads: string;
+  socket: string;
+  tdp: string;
+  baseClock: string;
+  boostClock: string;
+  vram: string;
+  memoryType: string;
+  length: string;
+  chipset: string;
+  formFactor: string;
+  memorySlots: string;
+  maxMemoryGb: string;
+  capacityGb: string;
+  speedMhz: string;
+  storageType: string;
+  interfaceType: string;
+  readSpeed: string;
+  writeSpeed: string;
+  wattage: string;
+  efficiency: string;
+  modular: string;
+  maxGpuLength: string;
+  maxCoolerHeight: string;
+  coolingType: string;
+  tdpSupport: string;
+  height: string;
+  sizeInches: string;
+  resolution: string;
+  refreshRateHz: string;
+  panelType: string;
+  connection: string;
+  layout: string;
+  switchType: string;
+  dpi: string;
+  sensor: string;
+  headsetType: string;
+  microphone: string;
+}
+
 export interface Dictionary {
-  nav: { home: string; configurator: string; profile: string };
+  nav: { home: string; configurator: string; profile: string; admin: string };
   common: { backToConfigurator: string; total: string };
   categories: Record<ComponentType, string>;
   specs: { cores: string; gb: string; watts: string; hz: string; dpi: string };
@@ -75,11 +116,51 @@ export interface Dictionary {
     status: { PENDING: string; COMPLETED: string; CANCELLED: string };
   };
   errors: { authFailed: string };
+  admin: {
+    forbidden: string;
+    loading: string;
+    dashboardTitle: string;
+    totalComponents: string;
+    totalUsers: string;
+    totalBuilds: string;
+    lowStockTitle: string;
+    noLowStock: string;
+    manageComponents: string;
+    componentsTitle: string;
+    addComponent: string;
+    editComponent: string;
+    backToDashboard: string;
+    backToComponents: string;
+    deleteAction: string;
+    deleteConfirm: string;
+    deleting: string;
+    deleteErrorFallback: string;
+    loadErrorFallback: string;
+    emptyComponents: string;
+    inactiveBadge: string;
+    form: {
+      typeLabel: string;
+      brandLabel: string;
+      nameLabel: string;
+      slugLabel: string;
+      priceLabel: string;
+      currencyLabel: string;
+      stockLabel: string;
+      imageUrlLabel: string;
+      isActiveLabel: string;
+      specsTitle: string;
+      save: string;
+      saving: string;
+      saveErrorFallback: string;
+      cancel: string;
+      fields: AdminFieldLabels;
+    };
+  };
 }
 
 export const dictionaries: Record<Locale, Dictionary> = {
   ru: {
-    nav: { home: "Главная", configurator: "Конфигуратор", profile: "Профиль" },
+    nav: { home: "Главная", configurator: "Конфигуратор", profile: "Профиль", admin: "Админка" },
     common: { backToConfigurator: "← К конфигуратору", total: "Итого" },
     categories: {
       CPU: "Процессор",
@@ -148,9 +229,88 @@ export const dictionaries: Record<Locale, Dictionary> = {
       status: { PENDING: "Ожидание", COMPLETED: "Начислено", CANCELLED: "Отменено" },
     },
     errors: { authFailed: "Ошибка авторизации" },
+    admin: {
+      forbidden: "У вас нет доступа к админ-панели",
+      loading: "Загрузка...",
+      dashboardTitle: "Админ-панель",
+      totalComponents: "Товаров",
+      totalUsers: "Пользователей",
+      totalBuilds: "Сборок",
+      lowStockTitle: "Заканчиваются на складе",
+      noLowStock: "Всё в достатке",
+      manageComponents: "Управление товарами",
+      componentsTitle: "Товары",
+      addComponent: "Добавить товар",
+      editComponent: "Редактировать товар",
+      backToDashboard: "← В админ-панель",
+      backToComponents: "← К товарам",
+      deleteAction: "Удалить",
+      deleteConfirm: "Удалить этот товар?",
+      deleting: "Удаление...",
+      deleteErrorFallback: "Не удалось удалить товар",
+      loadErrorFallback: "Не удалось загрузить данные",
+      emptyComponents: "Товаров пока нет",
+      inactiveBadge: "Скрыт",
+      form: {
+        typeLabel: "Категория",
+        brandLabel: "Бренд",
+        nameLabel: "Название",
+        slugLabel: "Slug (уникальный код)",
+        priceLabel: "Цена",
+        currencyLabel: "Валюта",
+        stockLabel: "Остаток на складе",
+        imageUrlLabel: "Ссылка на изображение",
+        isActiveLabel: "Показывать в каталоге",
+        specsTitle: "Характеристики",
+        save: "Сохранить",
+        saving: "Сохранение...",
+        saveErrorFallback: "Не удалось сохранить товар",
+        cancel: "Отмена",
+        fields: {
+          cores: "Ядра",
+          threads: "Потоки",
+          socket: "Сокет",
+          tdp: "TDP (Вт)",
+          baseClock: "Базовая частота (ГГц)",
+          boostClock: "Буст частота (ГГц)",
+          vram: "Видеопамять (ГБ)",
+          memoryType: "Тип памяти",
+          length: "Длина (мм)",
+          chipset: "Чипсет",
+          formFactor: "Форм-фактор",
+          memorySlots: "Слотов памяти",
+          maxMemoryGb: "Макс. память (ГБ)",
+          capacityGb: "Объём (ГБ)",
+          speedMhz: "Частота (МГц)",
+          storageType: "Тип накопителя",
+          interfaceType: "Интерфейс",
+          readSpeed: "Скорость чтения (МБ/с)",
+          writeSpeed: "Скорость записи (МБ/с)",
+          wattage: "Мощность (Вт)",
+          efficiency: "Сертификат эффективности",
+          modular: "Модульность",
+          maxGpuLength: "Макс. длина видеокарты (мм)",
+          maxCoolerHeight: "Макс. высота кулера (мм)",
+          coolingType: "Тип охлаждения",
+          tdpSupport: "Поддержка TDP (Вт)",
+          height: "Высота (мм)",
+          sizeInches: "Диагональ (дюймы)",
+          resolution: "Разрешение",
+          refreshRateHz: "Частота обновления (Гц)",
+          panelType: "Тип панели",
+          connection: "Подключение",
+          layout: "Раскладка",
+          switchType: "Тип переключателей",
+          dpi: "DPI",
+          sensor: "Сенсор",
+          headsetType: "Тип гарнитуры",
+          microphone: "Микрофон",
+        },
+      },
+    },
   },
   en: {
-    nav: { home: "Home", configurator: "Configurator", profile: "Profile" },
+    nav: { home: "Home", configurator: "Configurator", profile: "Profile", admin: "Admin" },
     common: { backToConfigurator: "← Back to configurator", total: "Total" },
     categories: {
       CPU: "Processor",
@@ -219,9 +379,88 @@ export const dictionaries: Record<Locale, Dictionary> = {
       status: { PENDING: "Pending", COMPLETED: "Credited", CANCELLED: "Cancelled" },
     },
     errors: { authFailed: "Authentication failed" },
+    admin: {
+      forbidden: "You don't have access to the admin panel",
+      loading: "Loading...",
+      dashboardTitle: "Admin panel",
+      totalComponents: "Products",
+      totalUsers: "Users",
+      totalBuilds: "Builds",
+      lowStockTitle: "Low stock",
+      noLowStock: "Everything is well stocked",
+      manageComponents: "Manage products",
+      componentsTitle: "Products",
+      addComponent: "Add product",
+      editComponent: "Edit product",
+      backToDashboard: "← Back to admin panel",
+      backToComponents: "← Back to products",
+      deleteAction: "Delete",
+      deleteConfirm: "Delete this product?",
+      deleting: "Deleting...",
+      deleteErrorFallback: "Failed to delete product",
+      loadErrorFallback: "Failed to load data",
+      emptyComponents: "No products yet",
+      inactiveBadge: "Hidden",
+      form: {
+        typeLabel: "Category",
+        brandLabel: "Brand",
+        nameLabel: "Name",
+        slugLabel: "Slug (unique code)",
+        priceLabel: "Price",
+        currencyLabel: "Currency",
+        stockLabel: "Stock",
+        imageUrlLabel: "Image URL",
+        isActiveLabel: "Show in catalog",
+        specsTitle: "Specifications",
+        save: "Save",
+        saving: "Saving...",
+        saveErrorFallback: "Failed to save product",
+        cancel: "Cancel",
+        fields: {
+          cores: "Cores",
+          threads: "Threads",
+          socket: "Socket",
+          tdp: "TDP (W)",
+          baseClock: "Base clock (GHz)",
+          boostClock: "Boost clock (GHz)",
+          vram: "VRAM (GB)",
+          memoryType: "Memory type",
+          length: "Length (mm)",
+          chipset: "Chipset",
+          formFactor: "Form factor",
+          memorySlots: "Memory slots",
+          maxMemoryGb: "Max memory (GB)",
+          capacityGb: "Capacity (GB)",
+          speedMhz: "Speed (MHz)",
+          storageType: "Storage type",
+          interfaceType: "Interface",
+          readSpeed: "Read speed (MB/s)",
+          writeSpeed: "Write speed (MB/s)",
+          wattage: "Wattage (W)",
+          efficiency: "Efficiency rating",
+          modular: "Modularity",
+          maxGpuLength: "Max GPU length (mm)",
+          maxCoolerHeight: "Max cooler height (mm)",
+          coolingType: "Cooling type",
+          tdpSupport: "TDP support (W)",
+          height: "Height (mm)",
+          sizeInches: "Size (inches)",
+          resolution: "Resolution",
+          refreshRateHz: "Refresh rate (Hz)",
+          panelType: "Panel type",
+          connection: "Connection",
+          layout: "Layout",
+          switchType: "Switch type",
+          dpi: "DPI",
+          sensor: "Sensor",
+          headsetType: "Headset type",
+          microphone: "Microphone",
+        },
+      },
+    },
   },
   uz: {
-    nav: { home: "Bosh sahifa", configurator: "Konfigurator", profile: "Profil" },
+    nav: { home: "Bosh sahifa", configurator: "Konfigurator", profile: "Profil", admin: "Administratsiya" },
     common: { backToConfigurator: "← Konfiguratorga qaytish", total: "Jami" },
     categories: {
       CPU: "Protsessor",
@@ -290,5 +529,84 @@ export const dictionaries: Record<Locale, Dictionary> = {
       status: { PENDING: "Kutilmoqda", COMPLETED: "Hisoblandi", CANCELLED: "Bekor qilindi" },
     },
     errors: { authFailed: "Avtorizatsiya xatosi" },
+    admin: {
+      forbidden: "Sizda admin-panelga kirish huquqi yo'q",
+      loading: "Yuklanmoqda...",
+      dashboardTitle: "Admin-panel",
+      totalComponents: "Tovarlar",
+      totalUsers: "Foydalanuvchilar",
+      totalBuilds: "Yig'ilmalar",
+      lowStockTitle: "Omborda kamayib qolmoqda",
+      noLowStock: "Hammasi yetarli",
+      manageComponents: "Tovarlarni boshqarish",
+      componentsTitle: "Tovarlar",
+      addComponent: "Tovar qo'shish",
+      editComponent: "Tovarni tahrirlash",
+      backToDashboard: "← Admin-panelga qaytish",
+      backToComponents: "← Tovarlarga qaytish",
+      deleteAction: "O'chirish",
+      deleteConfirm: "Bu tovarni o'chirasizmi?",
+      deleting: "O'chirilmoqda...",
+      deleteErrorFallback: "Tovarni o'chirib bo'lmadi",
+      loadErrorFallback: "Ma'lumotlarni yuklab bo'lmadi",
+      emptyComponents: "Hozircha tovarlar yo'q",
+      inactiveBadge: "Yashirilgan",
+      form: {
+        typeLabel: "Kategoriya",
+        brandLabel: "Brend",
+        nameLabel: "Nomi",
+        slugLabel: "Slug (noyob kod)",
+        priceLabel: "Narxi",
+        currencyLabel: "Valyuta",
+        stockLabel: "Ombordagi qoldiq",
+        imageUrlLabel: "Rasm havolasi",
+        isActiveLabel: "Katalogda ko'rsatish",
+        specsTitle: "Xususiyatlari",
+        save: "Saqlash",
+        saving: "Saqlanmoqda...",
+        saveErrorFallback: "Tovarni saqlab bo'lmadi",
+        cancel: "Bekor qilish",
+        fields: {
+          cores: "Yadrolar",
+          threads: "Oqimlar",
+          socket: "Soket",
+          tdp: "TDP (Vt)",
+          baseClock: "Baza chastotasi (GGts)",
+          boostClock: "Bust chastotasi (GGts)",
+          vram: "Video xotira (GB)",
+          memoryType: "Xotira turi",
+          length: "Uzunligi (mm)",
+          chipset: "Chipset",
+          formFactor: "Forma faktori",
+          memorySlots: "Xotira uyalari",
+          maxMemoryGb: "Maks. xotira (GB)",
+          capacityGb: "Hajmi (GB)",
+          speedMhz: "Chastota (MGts)",
+          storageType: "Xotira turi",
+          interfaceType: "Interfeys",
+          readSpeed: "O'qish tezligi (MB/s)",
+          writeSpeed: "Yozish tezligi (MB/s)",
+          wattage: "Quvvat (Vt)",
+          efficiency: "Samaradorlik sertifikati",
+          modular: "Modullilik",
+          maxGpuLength: "Videokartaning maks. uzunligi (mm)",
+          maxCoolerHeight: "Kulerning maks. balandligi (mm)",
+          coolingType: "Sovutish turi",
+          tdpSupport: "TDP qo'llab-quvvatlash (Vt)",
+          height: "Balandligi (mm)",
+          sizeInches: "Diagonal (dyuym)",
+          resolution: "Ruxsat",
+          refreshRateHz: "Yangilanish chastotasi (Gts)",
+          panelType: "Panel turi",
+          connection: "Ulanish",
+          layout: "Klaviatura tartibi",
+          switchType: "Svitch turi",
+          dpi: "DPI",
+          sensor: "Sensor",
+          headsetType: "Garnitura turi",
+          microphone: "Mikrofon",
+        },
+      },
+    },
   },
 };

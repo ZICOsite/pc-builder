@@ -1,4 +1,12 @@
-import type { Build, Component, ComponentType, ReferralStats, UserProfile } from "./types";
+import type {
+  AdminDashboard,
+  Build,
+  Component,
+  ComponentInput,
+  ComponentType,
+  ReferralStats,
+  UserProfile,
+} from "./types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 const BOT_USERNAME = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "PCForgeUzBot";
@@ -43,6 +51,7 @@ export async function apiFetch(path: string, accessToken: string, init?: Request
     throw new ApiError(res.status, `API error: ${res.status}`);
   }
 
+  if (res.status === 204) return undefined;
   return res.json();
 }
 
@@ -106,4 +115,40 @@ export async function trackReferral(buildId: string, accessToken: string): Promi
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ buildId }),
   });
+}
+
+export async function getAdminDashboard(accessToken: string): Promise<AdminDashboard> {
+  return apiFetch("/admin/dashboard", accessToken);
+}
+
+export async function getAdminComponents(accessToken: string): Promise<Component[]> {
+  return apiFetch("/admin/components", accessToken);
+}
+
+export async function getAdminComponent(id: number, accessToken: string): Promise<Component> {
+  return apiFetch(`/admin/components/${id}`, accessToken);
+}
+
+export async function createComponent(input: ComponentInput, accessToken: string): Promise<Component> {
+  return apiFetch("/admin/components", accessToken, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateComponent(
+  id: number,
+  input: Partial<ComponentInput>,
+  accessToken: string,
+): Promise<Component> {
+  return apiFetch(`/admin/components/${id}`, accessToken, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteComponent(id: number, accessToken: string): Promise<void> {
+  await apiFetch(`/admin/components/${id}`, accessToken, { method: "DELETE" });
 }

@@ -168,6 +168,7 @@ export interface UserProfile {
   discountPercent: number;
   createdAt: string;
   updatedAt: string;
+  isAdmin: boolean;
 }
 
 export type ReferralStatus = "PENDING" | "COMPLETED" | "CANCELLED";
@@ -189,4 +190,32 @@ export interface ReferralStats {
   completedReferrals: number;
   remainingSlots: number;
   referrals: ReferralEntry[];
+}
+
+export interface AdminDashboard {
+  totalComponents: number;
+  totalUsers: number;
+  totalBuilds: number;
+  lowStock: { id: number; name: string; stock: number }[];
+}
+
+export interface ComponentInput {
+  type: ComponentType;
+  brand: string;
+  name: string;
+  slug: string;
+  price: number;
+  currency?: string;
+  stock?: number;
+  imageUrl?: string;
+  isActive?: boolean;
+  specs?: Record<string, unknown>;
+  cpuSpecs?: CpuSpecs;
+  gpuSpecs?: GpuSpecs;
+  motherboardSpecs?: MotherboardSpecs;
+  ramSpecs?: RamSpecs;
+  storageSpecs?: { capacityGb: number; type: string; interfaceType: string; readSpeed?: number; writeSpeed?: number };
+  psuSpecs?: PsuSpecs;
+  caseSpecs?: CaseSpecs;
+  coolingSpecs?: { type: string; socket: string; tdpSupport: number; height?: number };
 }
