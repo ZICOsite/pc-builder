@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { ApiError, getBuild, getReferralLink, shareBuild } from "@/lib/api";
+import { ApiError, getBuild, getReferralLink, orderBuild, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
 import { missingCoreTypes } from "@/lib/compatibility";
 import type { Build } from "@/lib/types";
@@ -25,6 +25,7 @@ export default function BuildPage() {
   const { locale, t } = useLocale();
   const [state, setState] = useState<State>({ status: "loading" });
   const [shareState, setShareState] = useState<"idle" | "sharing" | "copied" | "error">("idle");
+  const [orderState, setOrderState] = useState<"idle" | "ordering" | "ordered" | "error">("idle");
 
   useEffect(() => {
     const accessToken = auth.status === "authenticated" ? auth.accessToken : undefined;
@@ -47,6 +48,17 @@ export default function BuildPage() {
       setShareState("copied");
     } catch {
       setShareState("error");
+    }
+  }
+
+  async function handleOrder() {
+    if (auth.status !== "authenticated" || state.status !== "ready") return;
+    setOrderState("ordering");
+    try {
+      await orderBuild(state.build.id, auth.accessToken);
+      setOrderState("ordered");
+    } catch {
+      setOrderState("error");
     }
   }
 
@@ -114,10 +126,31 @@ export default function BuildPage() {
             )}
           </div>
         </CardContent>
+        {isOwner && (
+          <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
+            <Button
+              type="button"
+              size="lg"
+              disabled={orderState === "ordering"}
+              onClick={handleOrder}
+              className="w-full"
+            >
+              {orderState === "ordering"
+                ? t.buildPage.ordering
+                : orderState === "ordered"
+                  ? t.buildPage.ordered
+                  : t.buildPage.placeOrder}
+            </Button>
+            {orderState === "error" && (
+              <p className="text-center text-sm text-destructive">{t.buildPage.orderError}</p>
+            )}
+          </CardFooter>
+        )}
         {isOwner && isComplete && (
           <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
             <Button
               type="button"
+              variant="outline"
               size="lg"
               disabled={shareState === "sharing"}
               onClick={handleShare}

@@ -104,6 +104,10 @@ export interface Dictionary {
     copyError: string;
     discountApplied: (percent: number) => string;
     incompleteBuild: (missing: string) => string;
+    placeOrder: string;
+    ordering: string;
+    ordered: string;
+    orderError: string;
   };
   profile: {
     loading: string;
@@ -227,6 +231,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       discountApplied: (percent) => `Скидка ${percent}% применена`,
       incompleteBuild: (missing) =>
         `Поделиться и получить реферальную скидку можно только полной сборкой ПК. Не хватает: ${missing}`,
+      placeOrder: "Оформить заказ",
+      ordering: "Отправка заказа...",
+      ordered: "Заказ отправлен ✅",
+      orderError: "Не удалось отправить заказ",
     },
     profile: {
       loading: "Загрузка...",
@@ -388,6 +396,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       discountApplied: (percent) => `${percent}% discount applied`,
       incompleteBuild: (missing) =>
         `Sharing and earning the referral discount only works for a complete PC build. Missing: ${missing}`,
+      placeOrder: "Place order",
+      ordering: "Sending order...",
+      ordered: "Order sent ✅",
+      orderError: "Failed to send order",
     },
     profile: {
       loading: "Loading...",
@@ -549,6 +561,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       discountApplied: (percent) => `${percent}% chegirma qo'llanildi`,
       incompleteBuild: (missing) =>
         `Ulashish va referal chegirma olish faqat to'liq PK yig'masida ishlaydi. Yetishmayapti: ${missing}`,
+      placeOrder: "Buyurtma berish",
+      ordering: "Buyurtma yuborilmoqda...",
+      ordered: "Buyurtma yuborildi ✅",
+      orderError: "Buyurtmani yuborib bo'lmadi",
     },
     profile: {
       loading: "Yuklanmoqda...",

@@ -105,6 +105,10 @@ export async function shareBuild(id: string, accessToken: string): Promise<Build
   return apiFetch(`/builds/${id}/share`, accessToken, { method: "POST" });
 }
 
+export async function orderBuild(id: string, accessToken: string): Promise<void> {
+  await apiFetch(`/builds/${id}/order`, accessToken, { method: "POST" });
+}
+
 export async function getProfile(accessToken: string): Promise<UserProfile> {
   return apiFetch("/users/me", accessToken);
 }
