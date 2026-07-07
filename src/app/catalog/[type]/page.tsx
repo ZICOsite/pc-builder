@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, Search } from "lucide-react";
 import { getComponents } from "@/lib/api";
@@ -9,6 +8,7 @@ import { formatPrice, specSummary } from "@/lib/format";
 import { COMPONENT_TYPES, type Component, type ComponentType } from "@/lib/types";
 import { CATEGORY_ICONS } from "@/lib/icons";
 import { useLocale } from "@/components/locale-provider";
+import { BackButton } from "@/components/back-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -63,9 +63,7 @@ export default function CatalogCategoryPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
-      <Link href="/" className="text-sm text-muted-foreground underline">
-        {t.catalog.backToCatalog}
-      </Link>
+      <BackButton fallbackHref="/" />
 
       <div className="flex items-center gap-2">
         <Icon className="size-6 text-primary" />

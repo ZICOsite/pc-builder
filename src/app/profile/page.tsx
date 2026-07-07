@@ -7,6 +7,7 @@ import { useLocale } from "@/components/locale-provider";
 import { getMyBuilds, getProfile, getReferralStats } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
 import type { Build, ReferralStats, UserProfile } from "@/lib/types";
+import { BackButton } from "@/components/back-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -49,9 +50,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
-      <Link href="/configurator" className="text-sm text-muted-foreground underline">
-        {t.common.backToConfigurator}
-      </Link>
+      <BackButton fallbackHref="/" />
 
       <Card>
         <CardContent>

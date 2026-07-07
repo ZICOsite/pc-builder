@@ -9,6 +9,7 @@ import { deleteComponent, getAdminComponents } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
 import { COMPONENT_TYPES, type Component, type ComponentType } from "@/lib/types";
 import { CATEGORY_ICONS } from "@/lib/icons";
+import { BackButton } from "@/components/back-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,9 +68,7 @@ export default function AdminComponentsPage() {
 
   return (
     <>
-      <Link href="/admin" className="text-sm text-muted-foreground underline">
-        {t.admin.backToDashboard}
-      </Link>
+      <BackButton fallbackHref="/admin" />
 
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">{t.admin.componentsTitle}</h1>

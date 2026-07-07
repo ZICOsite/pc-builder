@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { getAdminComponent, updateComponent } from "@/lib/api";
 import { ComponentForm } from "@/components/admin/component-form";
+import { BackButton } from "@/components/back-button";
 import type { Component, ComponentInput } from "@/lib/types";
 
 type State = { status: "loading" } | { status: "error" } | { status: "ready"; component: Component };
@@ -43,9 +43,7 @@ export default function EditComponentPage() {
 
   return (
     <>
-      <Link href="/admin/components" className="text-sm text-muted-foreground underline">
-        {t.admin.backToComponents}
-      </Link>
+      <BackButton fallbackHref="/admin/components" />
       <h1 className="text-xl font-semibold">{t.admin.editComponent}</h1>
 
       {state.status === "loading" && (

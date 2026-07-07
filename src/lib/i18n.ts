@@ -62,12 +62,11 @@ export interface AdminFieldLabels {
 
 export interface Dictionary {
   nav: { home: string; configurator: string; profile: string; admin: string };
-  common: { backToConfigurator: string; total: string };
+  common: { back: string; total: string };
   categories: Record<ComponentType, string>;
   specs: { cores: string; gb: string; watts: string; hz: string; dpi: string };
   home: { title: string; subtitle: string };
   catalog: {
-    backToCatalog: string;
     loading: string;
     loadErrorFallback: string;
     empty: string;
@@ -137,8 +136,6 @@ export interface Dictionary {
     componentsTitle: string;
     addComponent: string;
     editComponent: string;
-    backToDashboard: string;
-    backToComponents: string;
     deleteAction: string;
     deleteConfirm: string;
     deleting: string;
@@ -172,7 +169,7 @@ export interface Dictionary {
 export const dictionaries: Record<Locale, Dictionary> = {
   ru: {
     nav: { home: "Главная", configurator: "Конфигуратор", profile: "Профиль", admin: "Админка" },
-    common: { backToConfigurator: "← К конфигуратору", total: "Итого" },
+    common: { back: "← Назад", total: "Итого" },
     categories: {
       CPU: "Процессор",
       MOTHERBOARD: "Материнская плата",
@@ -190,7 +187,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
     specs: { cores: "ядер", gb: "ГБ", watts: "Вт", hz: "Гц", dpi: "DPI" },
     home: { title: "Каталог", subtitle: "Выберите категорию, чтобы посмотреть товары" },
     catalog: {
-      backToCatalog: "← К каталогу",
       loading: "Загрузка товаров...",
       loadErrorFallback: "Не удалось загрузить товары",
       empty: "В этой категории пока нет товаров",
@@ -261,8 +257,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
       componentsTitle: "Товары",
       addComponent: "Добавить товар",
       editComponent: "Редактировать товар",
-      backToDashboard: "← В админ-панель",
-      backToComponents: "← К товарам",
       deleteAction: "Удалить",
       deleteConfirm: "Удалить этот товар?",
       deleting: "Удаление...",
@@ -333,7 +327,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   },
   en: {
     nav: { home: "Home", configurator: "Configurator", profile: "Profile", admin: "Admin" },
-    common: { backToConfigurator: "← Back to configurator", total: "Total" },
+    common: { back: "← Back", total: "Total" },
     categories: {
       CPU: "Processor",
       MOTHERBOARD: "Motherboard",
@@ -351,7 +345,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
     specs: { cores: "cores", gb: "GB", watts: "W", hz: "Hz", dpi: "DPI" },
     home: { title: "Catalog", subtitle: "Pick a category to browse products" },
     catalog: {
-      backToCatalog: "← Back to catalog",
       loading: "Loading products...",
       loadErrorFallback: "Failed to load products",
       empty: "No products in this category yet",
@@ -422,8 +415,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
       componentsTitle: "Products",
       addComponent: "Add product",
       editComponent: "Edit product",
-      backToDashboard: "← Back to admin panel",
-      backToComponents: "← Back to products",
       deleteAction: "Delete",
       deleteConfirm: "Delete this product?",
       deleting: "Deleting...",
@@ -494,7 +485,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   },
   uz: {
     nav: { home: "Bosh sahifa", configurator: "Konfigurator", profile: "Profil", admin: "Administratsiya" },
-    common: { backToConfigurator: "← Konfiguratorga qaytish", total: "Jami" },
+    common: { back: "← Orqaga", total: "Jami" },
     categories: {
       CPU: "Protsessor",
       MOTHERBOARD: "Ona plata",
@@ -512,7 +503,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
     specs: { cores: "yadro", gb: "GB", watts: "Vt", hz: "Gts", dpi: "DPI" },
     home: { title: "Katalog", subtitle: "Tovarlarni ko'rish uchun kategoriyani tanlang" },
     catalog: {
-      backToCatalog: "← Katalogga qaytish",
       loading: "Tovarlar yuklanmoqda...",
       loadErrorFallback: "Tovarlarni yuklab bo'lmadi",
       empty: "Bu kategoriyada hozircha tovarlar yo'q",
@@ -583,8 +573,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
       componentsTitle: "Tovarlar",
       addComponent: "Tovar qo'shish",
       editComponent: "Tovarni tahrirlash",
-      backToDashboard: "← Admin-panelga qaytish",
-      backToComponents: "← Tovarlarga qaytish",
       deleteAction: "O'chirish",
       deleteConfirm: "Bu tovarni o'chirasizmi?",
       deleting: "O'chirilmoqda...",

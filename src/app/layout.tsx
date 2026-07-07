@@ -5,6 +5,7 @@ import { LocaleProvider } from "@/components/locale-provider";
 import { AdminProvider } from "@/components/admin-provider";
 import { Nav } from "@/components/nav";
 import { ReferralTracker } from "@/components/referral-tracker";
+import { NavigationTracker } from "@/components/navigation-tracker";
 import "./globals.css";
 
 // Poppins не поддерживает кириллицу (только latin/latin-ext/devanagari) — для ru-локали
@@ -41,6 +42,7 @@ export default function RootLayout({
         <LocaleProvider>
           <TelegramProvider>
             <AdminProvider>
+              <NavigationTracker />
               <ReferralTracker />
               <Nav />
               {children}

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ApiError, getBuild, getReferralLink, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
 import type { Build } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
+import { BackButton } from "@/components/back-button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -71,9 +71,7 @@ export default function BuildPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
-      <Link href="/configurator" className="text-sm text-muted-foreground underline">
-        {t.common.backToConfigurator}
-      </Link>
+      <BackButton fallbackHref="/" />
       <h1 className="text-xl font-semibold">{build.name}</h1>
 
       <div className="flex flex-col gap-2">
