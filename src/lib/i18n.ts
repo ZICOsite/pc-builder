@@ -152,6 +152,7 @@ export interface Dictionary {
       brandLabel: string;
       nameLabel: string;
       slugLabel: string;
+      slugAutoHint: string;
       priceLabel: string;
       currencyLabel: string;
       stockLabel: string;
@@ -275,6 +276,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         brandLabel: "Бренд",
         nameLabel: "Название",
         slugLabel: "Slug (уникальный код)",
+        slugAutoHint: "Генерируется автоматически из бренда и названия — можно изменить вручную",
         priceLabel: "Цена",
         currencyLabel: "Валюта",
         stockLabel: "Остаток на складе",
@@ -435,6 +437,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         brandLabel: "Brand",
         nameLabel: "Name",
         slugLabel: "Slug (unique code)",
+        slugAutoHint: "Auto-generated from brand and name — you can edit it manually",
         priceLabel: "Price",
         currencyLabel: "Currency",
         stockLabel: "Stock",
@@ -595,6 +598,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         brandLabel: "Brend",
         nameLabel: "Nomi",
         slugLabel: "Slug (noyob kod)",
+        slugAutoHint: "Brend va nomdan avtomatik yaratiladi — qo'lda o'zgartirish mumkin",
         priceLabel: "Narxi",
         currencyLabel: "Valyuta",
         stockLabel: "Ombordagi qoldiq",

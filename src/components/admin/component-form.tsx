@@ -1,11 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useLocale } from "@/components/locale-provider";
 import { COMPONENT_TYPES, type Component, type ComponentInput, type ComponentType } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+
+function slugify(input: string): string {
+  return input
+    .normalize("NFKD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 interface FormState {
   type: ComponentType;
@@ -349,10 +359,16 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
   const { t } = useLocale();
   const f = t.admin.form;
   const [form, setForm] = useState<FormState>(() => (initial ? fromComponent(initial) : emptyForm("CPU")));
+  const [slugTouched, setSlugTouched] = useState(Boolean(initial));
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
+
+  useEffect(() => {
+    if (slugTouched) return;
+    setForm((prev) => ({ ...prev, slug: slugify(`${prev.brand} ${prev.name}`) }));
+  }, [form.brand, form.name, slugTouched]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -406,7 +422,21 @@ export function ComponentForm({ initial, submitting, errorMessage, onSubmit, onC
 
       {textField("brand", f.brandLabel)}
       {textField("name", f.nameLabel)}
-      {textField("slug", f.slugLabel)}
+
+      <div className="flex flex-col gap-1">
+        <Label htmlFor="slug">{f.slugLabel}</Label>
+        <Input
+          id="slug"
+          required
+          value={form.slug}
+          onChange={(e) => {
+            setSlugTouched(true);
+            set("slug", e.target.value);
+          }}
+        />
+        <span className="text-xs text-muted-foreground">{f.slugAutoHint}</span>
+      </div>
+
       {textField("price", f.priceLabel, "number", { min: 1 })}
       {textField("currency", f.currencyLabel)}
       {textField("stock", f.stockLabel, "number")}
