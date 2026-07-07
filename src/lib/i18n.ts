@@ -146,6 +146,7 @@ export interface Dictionary {
     loadErrorFallback: string;
     emptyComponents: string;
     inactiveBadge: string;
+    allCategories: string;
     form: {
       typeLabel: string;
       brandLabel: string;
@@ -268,6 +269,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Не удалось загрузить данные",
       emptyComponents: "Товаров пока нет",
       inactiveBadge: "Скрыт",
+      allCategories: "Все категории",
       form: {
         typeLabel: "Категория",
         brandLabel: "Бренд",
@@ -427,6 +429,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Failed to load data",
       emptyComponents: "No products yet",
       inactiveBadge: "Hidden",
+      allCategories: "All categories",
       form: {
         typeLabel: "Category",
         brandLabel: "Brand",
@@ -586,6 +589,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       loadErrorFallback: "Ma'lumotlarni yuklab bo'lmadi",
       emptyComponents: "Hozircha tovarlar yo'q",
       inactiveBadge: "Yashirilgan",
+      allCategories: "Barcha turkumlar",
       form: {
         typeLabel: "Kategoriya",
         brandLabel: "Brend",
