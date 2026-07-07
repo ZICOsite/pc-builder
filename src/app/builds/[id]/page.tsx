@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ApiError, getBuild, getReferralLink, orderBuild, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
-import { missingCoreTypes } from "@/lib/compatibility";
+import { canOrderBuild, missingCoreTypes } from "@/lib/compatibility";
 import type { Build } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
@@ -85,6 +86,7 @@ export default function BuildPage() {
   const discountedTotal = discountPercent > 0 ? Math.round(totalPrice * (1 - discountPercent / 100)) : totalPrice;
   const missing = missingCoreTypes(build.items);
   const isComplete = missing.length === 0;
+  const canOrder = canOrderBuild(build.items);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
@@ -126,7 +128,7 @@ export default function BuildPage() {
             )}
           </div>
         </CardContent>
-        {isOwner && (
+        {isOwner && canOrder && (
           <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
             <Button
               type="button"
@@ -144,6 +146,21 @@ export default function BuildPage() {
             {orderState === "error" && (
               <p className="text-center text-sm text-destructive">{t.buildPage.orderError}</p>
             )}
+          </CardFooter>
+        )}
+        {isOwner && !canOrder && (
+          <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
+            <Button
+              render={<Link href={`/configurator?buildId=${build.id}`} />}
+              nativeButton={false}
+              size="lg"
+              className="w-full"
+            >
+              {t.buildPage.continueBuilding}
+            </Button>
+            <p className="text-center text-sm text-muted-foreground">
+              {t.buildPage.incompleteBuild(missing.map((type) => t.categories[type]).join(", "))}
+            </p>
           </CardFooter>
         )}
         {isOwner && isComplete && (
@@ -169,11 +186,9 @@ export default function BuildPage() {
             )}
           </CardFooter>
         )}
-        {isOwner && !isComplete && (
+        {isOwner && !isComplete && canOrder && (
           <CardFooter className="border-t-0 bg-transparent pt-0">
-            <p className="text-center text-sm text-muted-foreground">
-              {t.buildPage.incompleteBuild(missing.map((type) => t.categories[type]).join(", "))}
-            </p>
+            <p className="text-center text-sm text-muted-foreground">{t.buildPage.accessoriesOnlyNote}</p>
           </CardFooter>
         )}
       </Card>

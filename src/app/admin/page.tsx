@@ -9,6 +9,7 @@ import type { AdminDashboard } from "@/lib/types";
 import { CATEGORY_ICONS } from "@/lib/icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type State = { status: "loading" } | { status: "error" } | { status: "ready"; data: AdminDashboard };
 
@@ -37,7 +38,7 @@ export default function AdminDashboardPage() {
 
       {state.status === "ready" && (
         <>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Card size="sm">
               <CardContent className="flex flex-col items-center gap-1 text-center">
                 <span className="text-2xl font-semibold">{state.data.totalComponents}</span>
@@ -54,6 +55,12 @@ export default function AdminDashboardPage() {
               <CardContent className="flex flex-col items-center gap-1 text-center">
                 <span className="text-2xl font-semibold">{state.data.totalBuilds}</span>
                 <span className="text-xs text-muted-foreground">{t.admin.totalBuilds}</span>
+              </CardContent>
+            </Card>
+            <Card size="sm">
+              <CardContent className="flex flex-col items-center gap-1 text-center">
+                <span className="text-2xl font-semibold">{state.data.pendingOrders}</span>
+                <span className="text-xs text-muted-foreground">{t.admin.totalPendingOrders}</span>
               </CardContent>
             </Card>
           </div>
@@ -86,9 +93,25 @@ export default function AdminDashboardPage() {
         </>
       )}
 
-      <Button render={<Link href="/admin/components" />} nativeButton={false} size="lg" className="w-full">
-        {t.admin.manageComponents}
-      </Button>
+      <div className="flex flex-col gap-2">
+        <Button render={<Link href="/admin/components" />} nativeButton={false} size="lg" className="w-full">
+          {t.admin.manageComponents}
+        </Button>
+        <Button
+          render={<Link href="/admin/orders" />}
+          nativeButton={false}
+          variant="outline"
+          size="lg"
+          className="w-full"
+        >
+          {t.admin.manageOrders}
+          {state.status === "ready" && state.data.pendingOrders > 0 && (
+            <Badge variant="destructive" className="ml-1">
+              {state.data.pendingOrders}
+            </Badge>
+          )}
+        </Button>
+      </div>
     </>
   );
 }

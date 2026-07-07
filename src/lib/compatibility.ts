@@ -9,6 +9,14 @@ export function missingCoreTypes(items: BuildItem[]): ComponentType[] {
   return CORE_COMPONENT_TYPES.filter((type) => !presentTypes.has(type));
 }
 
+// Заказать можно полностью собранный ПК (все core-категории) или набор из одной периферии
+// (0 core-категорий) — недобранный ПК (часть core-категорий) заказать нельзя, см. builds.service.ts
+export function canOrderBuild(items: BuildItem[]): boolean {
+  const presentTypes = new Set(items.map((item) => item.component.type));
+  const coreCount = CORE_COMPONENT_TYPES.filter((type) => presentTypes.has(type)).length;
+  return coreCount === 0 || coreCount === CORE_COMPONENT_TYPES.length;
+}
+
 const PSU_WATTAGE_MIN_BUFFER = 100;
 const PSU_WATTAGE_MARGIN = 1.3;
 

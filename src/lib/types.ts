@@ -213,6 +213,39 @@ export interface AdminDashboard {
   totalBuilds: number;
   lowStock: { id: number; name: string; type: ComponentType; stock: number }[];
   lowStockThreshold: number;
+  pendingOrders: number;
+}
+
+export type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
+
+export interface OrderItemSnapshot {
+  componentId: number;
+  name: string;
+  brand: string;
+  price: string;
+  currency: string;
+  quantity: number;
+}
+
+export interface Order {
+  id: number;
+  buildId: string | null;
+  buyerId: number;
+  buildName: string;
+  itemsSnapshot: OrderItemSnapshot[];
+  totalPrice: string;
+  currency: string;
+  discountPercent: number;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+  buyer: {
+    id: number;
+    telegramId: string;
+    username: string | null;
+    firstName: string | null;
+    lastName: string | null;
+  };
 }
 
 export interface ComponentInput {

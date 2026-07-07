@@ -108,6 +108,8 @@ export interface Dictionary {
     ordering: string;
     ordered: string;
     orderError: string;
+    continueBuilding: string;
+    accessoriesOnlyNote: string;
   };
   profile: {
     loading: string;
@@ -136,9 +138,11 @@ export interface Dictionary {
     totalComponents: string;
     totalUsers: string;
     totalBuilds: string;
+    totalPendingOrders: string;
     lowStockTitle: string;
     noLowStock: string;
     manageComponents: string;
+    manageOrders: string;
     componentsTitle: string;
     addComponent: string;
     editComponent: string;
@@ -168,6 +172,20 @@ export interface Dictionary {
       cancel: string;
       optionalHint: string;
       fields: AdminFieldLabels;
+    };
+    orders: {
+      title: string;
+      loading: string;
+      loadErrorFallback: string;
+      empty: string;
+      buyerLabel: string;
+      status: { PENDING: string; COMPLETED: string; CANCELLED: string };
+      markCompleted: string;
+      markCancelled: string;
+      updating: string;
+      updateErrorFallback: string;
+      itemsCount: (count: number) => string;
+      discountNote: (percent: number) => string;
     };
   };
 }
@@ -235,6 +253,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ordering: "Отправка заказа...",
       ordered: "Заказ отправлен ✅",
       orderError: "Не удалось отправить заказ",
+      continueBuilding: "Продолжить сборку",
+      accessoriesOnlyNote: "Это набор периферии — реферальная скидка доступна только для полной сборки ПК",
     },
     profile: {
       loading: "Загрузка...",
@@ -264,9 +284,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       totalComponents: "Товаров",
       totalUsers: "Пользователей",
       totalBuilds: "Сборок",
+      totalPendingOrders: "Ожидают заказы",
       lowStockTitle: "Заканчиваются на складе",
       noLowStock: "Всё в достатке",
       manageComponents: "Управление товарами",
+      manageOrders: "Заказы",
       componentsTitle: "Товары",
       addComponent: "Добавить товар",
       editComponent: "Редактировать товар",
@@ -336,6 +358,20 @@ export const dictionaries: Record<Locale, Dictionary> = {
           microphone: "Микрофон",
         },
       },
+      orders: {
+        title: "Заказы",
+        loading: "Загрузка заказов...",
+        loadErrorFallback: "Не удалось загрузить заказы",
+        empty: "Заказов пока нет",
+        buyerLabel: "Покупатель",
+        status: { PENDING: "Ожидает", COMPLETED: "Продано", CANCELLED: "Отменено" },
+        markCompleted: "Отметить проданным",
+        markCancelled: "Отменить",
+        updating: "Обновление...",
+        updateErrorFallback: "Не удалось обновить статус",
+        itemsCount: (count) => `${count} позиций`,
+        discountNote: (percent) => `скидка ${percent}%`,
+      },
     },
   },
   en: {
@@ -400,6 +436,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ordering: "Sending order...",
       ordered: "Order sent ✅",
       orderError: "Failed to send order",
+      continueBuilding: "Continue building",
+      accessoriesOnlyNote: "This is an accessories-only set — the referral discount only applies to a complete PC build",
     },
     profile: {
       loading: "Loading...",
@@ -429,9 +467,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       totalComponents: "Products",
       totalUsers: "Users",
       totalBuilds: "Builds",
+      totalPendingOrders: "Pending orders",
       lowStockTitle: "Low stock",
       noLowStock: "Everything is well stocked",
       manageComponents: "Manage products",
+      manageOrders: "Orders",
       componentsTitle: "Products",
       addComponent: "Add product",
       editComponent: "Edit product",
@@ -501,6 +541,20 @@ export const dictionaries: Record<Locale, Dictionary> = {
           microphone: "Microphone",
         },
       },
+      orders: {
+        title: "Orders",
+        loading: "Loading orders...",
+        loadErrorFallback: "Failed to load orders",
+        empty: "No orders yet",
+        buyerLabel: "Buyer",
+        status: { PENDING: "Pending", COMPLETED: "Sold", CANCELLED: "Cancelled" },
+        markCompleted: "Mark as sold",
+        markCancelled: "Cancel",
+        updating: "Updating...",
+        updateErrorFallback: "Failed to update status",
+        itemsCount: (count) => `${count} items`,
+        discountNote: (percent) => `${percent}% discount`,
+      },
     },
   },
   uz: {
@@ -565,6 +619,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ordering: "Buyurtma yuborilmoqda...",
       ordered: "Buyurtma yuborildi ✅",
       orderError: "Buyurtmani yuborib bo'lmadi",
+      continueBuilding: "Yig'ishni davom ettirish",
+      accessoriesOnlyNote: "Bu faqat aksessuarlar to'plami — referal chegirma faqat to'liq PK yig'masiga tegishli",
     },
     profile: {
       loading: "Yuklanmoqda...",
@@ -594,9 +650,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       totalComponents: "Tovarlar",
       totalUsers: "Foydalanuvchilar",
       totalBuilds: "Yig'ilmalar",
+      totalPendingOrders: "Kutilayotgan buyurtmalar",
       lowStockTitle: "Omborda kamayib qolmoqda",
       noLowStock: "Hammasi yetarli",
       manageComponents: "Tovarlarni boshqarish",
+      manageOrders: "Buyurtmalar",
       componentsTitle: "Tovarlar",
       addComponent: "Tovar qo'shish",
       editComponent: "Tovarni tahrirlash",
@@ -665,6 +723,20 @@ export const dictionaries: Record<Locale, Dictionary> = {
           headsetType: "Garnitura turi",
           microphone: "Mikrofon",
         },
+      },
+      orders: {
+        title: "Buyurtmalar",
+        loading: "Buyurtmalar yuklanmoqda...",
+        loadErrorFallback: "Buyurtmalarni yuklab bo'lmadi",
+        empty: "Hozircha buyurtmalar yo'q",
+        buyerLabel: "Xaridor",
+        status: { PENDING: "Kutilmoqda", COMPLETED: "Sotilgan", CANCELLED: "Bekor qilingan" },
+        markCompleted: "Sotilgan deb belgilash",
+        markCancelled: "Bekor qilish",
+        updating: "Yangilanmoqda...",
+        updateErrorFallback: "Holatni yangilab bo'lmadi",
+        itemsCount: (count) => `${count} ta band`,
+        discountNote: (percent) => `${percent}% chegirma`,
       },
     },
   },

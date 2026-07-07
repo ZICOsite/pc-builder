@@ -4,6 +4,8 @@ import type {
   Component,
   ComponentInput,
   ComponentType,
+  Order,
+  OrderStatus,
   ReferralStats,
   UserProfile,
 } from "./types";
@@ -89,6 +91,36 @@ export async function getMyBuilds(accessToken: string): Promise<Build[]> {
   return apiFetch("/builds", accessToken);
 }
 
+// Синхронизирует состав уже существующей сборки с текущим выбором (используется при
+// "продолжении" сборки в конфигураторе) — добавляет новые позиции, убирает снятые.
+export async function updateBuildItems(
+  accessToken: string,
+  buildId: string,
+  items: { componentId: number; quantity: number }[],
+): Promise<Build> {
+  const current: Build = await apiFetch(`/builds/${buildId}`, accessToken);
+  const nextIds = new Set(items.map((item) => item.componentId));
+
+  for (const item of current.items) {
+    if (!nextIds.has(item.componentId)) {
+      await apiFetch(`/builds/${buildId}/items/${item.componentId}`, accessToken, { method: "DELETE" });
+    }
+  }
+
+  const currentIds = new Set(current.items.map((item) => item.componentId));
+  for (const item of items) {
+    if (!currentIds.has(item.componentId)) {
+      await apiFetch(`/builds/${buildId}/items`, accessToken, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(item),
+      });
+    }
+  }
+
+  return apiFetch(`/builds/${buildId}`, accessToken);
+}
+
 export async function getBuild(id: string, accessToken?: string): Promise<Build> {
   const res = await fetch(`${API_BASE_URL}/builds/${id}`, {
     headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
@@ -159,4 +191,16 @@ export async function updateComponent(
 
 export async function deleteComponent(id: number, accessToken: string): Promise<void> {
   await apiFetch(`/admin/components/${id}`, accessToken, { method: "DELETE" });
+}
+
+export async function getAdminOrders(accessToken: string): Promise<Order[]> {
+  return apiFetch("/orders", accessToken);
+}
+
+export async function updateOrderStatus(id: number, status: OrderStatus, accessToken: string): Promise<Order> {
+  return apiFetch(`/orders/${id}`, accessToken, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
 }

@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle2, X } from "lucide-react";
-import { getComponents, saveBuild } from "@/lib/api";
+import { getBuild, getComponents, saveBuild, updateBuildItems } from "@/lib/api";
 import { isCompatible, type Selections } from "@/lib/compatibility";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -32,8 +33,11 @@ function pruneIncompatible(selections: Selections): Selections {
 export function Configurator() {
   const auth = useAuth();
   const { locale, t } = useLocale();
+  const searchParams = useSearchParams();
+  const resumeBuildId = searchParams.get("buildId");
   const [componentsByType, setComponentsByType] = useState<Partial<Record<ComponentType, Component[]>>>({});
   const [loading, setLoading] = useState(true);
+  const [loadingResume, setLoadingResume] = useState(Boolean(resumeBuildId));
   const [loadError, setLoadError] = useState(false);
   const [selections, setSelections] = useState<Selections>({});
   const [pickerType, setPickerType] = useState<ComponentType | null>(null);
@@ -49,6 +53,26 @@ export function Configurator() {
       .catch(() => setLoadError(true))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!resumeBuildId) return;
+    if (auth.status === "loading") return;
+    if (auth.status !== "authenticated") {
+      setLoadingResume(false);
+      return;
+    }
+    getBuild(resumeBuildId, auth.accessToken)
+      .then((build) => {
+        if (build.userId !== auth.userId) return;
+        const next: Selections = {};
+        for (const item of build.items) {
+          next[item.component.type] = item.component;
+        }
+        setSelections(pruneIncompatible(next));
+      })
+      .catch(() => {})
+      .finally(() => setLoadingResume(false));
+  }, [resumeBuildId, auth]);
 
   const totalPrice = useMemo(
     () => Object.values(selections).reduce((sum, c) => sum + Number(c.price), 0),
@@ -78,14 +102,16 @@ export function Configurator() {
 
     setSaveState({ status: "saving" });
     try {
-      const build = await saveBuild(auth.accessToken, items);
+      const build = resumeBuildId
+        ? await updateBuildItems(auth.accessToken, resumeBuildId, items)
+        : await saveBuild(auth.accessToken, items);
       setSaveState({ status: "saved", buildId: build.id });
     } catch {
       setSaveState({ status: "error" });
     }
   }
 
-  if (loading) {
+  if (loading || loadingResume) {
     return <p className="p-4 text-center text-muted-foreground">{t.configurator.loading}</p>;
   }
 
