@@ -6,6 +6,7 @@ import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { getAdminDashboard } from "@/lib/api";
 import type { AdminDashboard } from "@/lib/types";
+import { CATEGORY_ICONS } from "@/lib/icons";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -64,12 +65,20 @@ export default function AdminDashboardPage() {
                 <p className="text-sm text-muted-foreground">{t.admin.noLowStock}</p>
               ) : (
                 <div className="flex flex-col gap-1">
-                  {state.data.lowStock.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between text-sm">
-                      <span>{item.name}</span>
-                      <span className="text-destructive">{item.stock}</span>
-                    </div>
-                  ))}
+                  {state.data.lowStock.map((item) => {
+                    const Icon = CATEGORY_ICONS[item.type];
+                    const criticalThreshold = Math.max(1, Math.floor(state.data.lowStockThreshold / 3));
+                    const isCritical = item.stock <= criticalThreshold;
+                    return (
+                      <div key={item.id} className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">
+                          <Icon className={isCritical ? "size-4 text-destructive" : "size-4 text-warning"} />
+                          {item.name}
+                        </span>
+                        <span className={isCritical ? "text-destructive" : "text-warning"}>{item.stock}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

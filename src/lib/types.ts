@@ -198,7 +198,8 @@ export interface AdminDashboard {
   totalComponents: number;
   totalUsers: number;
   totalBuilds: number;
-  lowStock: { id: number; name: string; stock: number }[];
+  lowStock: { id: number; name: string; type: ComponentType; stock: number }[];
+  lowStockThreshold: number;
 }
 
 export interface ComponentInput {
