@@ -27,6 +27,19 @@ export const COMPONENT_TYPES: ComponentType[] = [
   "HEADSET",
 ];
 
+// Категории, обязательные для "полной сборки ПК" — периферия в их число не входит.
+// Держать в синхроне с CORE_COMPONENT_TYPES в pc-builder-api/src/modules/builds/builds.service.ts.
+export const CORE_COMPONENT_TYPES: ComponentType[] = [
+  "CPU",
+  "MOTHERBOARD",
+  "RAM",
+  "GPU",
+  "STORAGE",
+  "PSU",
+  "CASE",
+  "COOLING",
+];
+
 export interface CpuSpecs {
   cores: number;
   threads: number;

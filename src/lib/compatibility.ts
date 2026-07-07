@@ -1,6 +1,13 @@
-import type { Component, ComponentType } from "./types";
+import type { BuildItem, Component, ComponentType } from "./types";
+import { CORE_COMPONENT_TYPES } from "./types";
 
 export type Selections = Partial<Record<ComponentType, Component>>;
+
+// Категории core-сборки, которых не хватает в этом наборе items — пустой массив значит сборка полная
+export function missingCoreTypes(items: BuildItem[]): ComponentType[] {
+  const presentTypes = new Set(items.map((item) => item.component.type));
+  return CORE_COMPONENT_TYPES.filter((type) => !presentTypes.has(type));
+}
 
 const PSU_WATTAGE_MIN_BUFFER = 100;
 const PSU_WATTAGE_MARGIN = 1.3;

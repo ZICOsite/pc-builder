@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ApiError, getBuild, getReferralLink, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
+import { missingCoreTypes } from "@/lib/compatibility";
 import type { Build } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
@@ -70,6 +71,8 @@ export default function BuildPage() {
   const totalPrice = build.totalPrice ? Number(build.totalPrice) : 0;
   const discountPercent = isOwner ? (build.user?.discountPercent ?? 0) : 0;
   const discountedTotal = discountPercent > 0 ? Math.round(totalPrice * (1 - discountPercent / 100)) : totalPrice;
+  const missing = missingCoreTypes(build.items);
+  const isComplete = missing.length === 0;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
@@ -111,7 +114,7 @@ export default function BuildPage() {
             )}
           </div>
         </CardContent>
-        {isOwner && (
+        {isOwner && isComplete && (
           <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">
             <Button
               type="button"
@@ -131,6 +134,13 @@ export default function BuildPage() {
             {shareState === "error" && (
               <p className="text-center text-sm text-destructive">{t.buildPage.copyError}</p>
             )}
+          </CardFooter>
+        )}
+        {isOwner && !isComplete && (
+          <CardFooter className="border-t-0 bg-transparent pt-0">
+            <p className="text-center text-sm text-muted-foreground">
+              {t.buildPage.incompleteBuild(missing.map((type) => t.categories[type]).join(", "))}
+            </p>
           </CardFooter>
         )}
       </Card>
