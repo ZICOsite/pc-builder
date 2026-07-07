@@ -102,6 +102,7 @@ export interface Dictionary {
     copyLink: string;
     share: string;
     copyError: string;
+    discountApplied: (percent: number) => string;
   };
   profile: {
     loading: string;
@@ -222,6 +223,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       copyLink: "Скопировать ссылку",
       share: "Поделиться",
       copyError: "Не удалось скопировать ссылку",
+      discountApplied: (percent) => `Скидка ${percent}% применена`,
     },
     profile: {
       loading: "Загрузка...",
@@ -380,6 +382,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       copyLink: "Copy link",
       share: "Share",
       copyError: "Failed to copy link",
+      discountApplied: (percent) => `${percent}% discount applied`,
     },
     profile: {
       loading: "Loading...",
@@ -538,6 +541,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       copyLink: "Havolani nusxalash",
       share: "Ulashish",
       copyError: "Havolani nusxalab bo'lmadi",
+      discountApplied: (percent) => `${percent}% chegirma qo'llanildi`,
     },
     profile: {
       loading: "Yuklanmoqda...",

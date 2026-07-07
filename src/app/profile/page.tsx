@@ -72,26 +72,34 @@ export default function ProfilePage() {
       <div className="flex flex-col gap-2">
         <div className="text-sm text-muted-foreground">{t.profile.myBuildsTitle}</div>
         {builds.length === 0 && <p className="text-sm text-muted-foreground">{t.profile.noBuilds}</p>}
-        {builds.map((build) => (
-          <Link key={build.id} href={`/builds/${build.id}`}>
-            <Card size="sm" className="transition-colors hover:bg-muted">
-              <CardContent className="flex items-center justify-between gap-2">
-                <div>
-                  <div className="font-medium">{build.name}</div>
-                  <div className="text-sm text-muted-foreground">{t.profile.itemsCount(build.items.length)}</div>
-                </div>
-                <div className="flex shrink-0 flex-col items-end gap-1">
-                  <span className="text-sm font-medium">
-                    {formatPrice(Number(build.totalPrice ?? 0), "UZS", locale)}
-                  </span>
-                  <Badge variant={build.isPublic ? "secondary" : "outline"}>
-                    {build.isPublic ? t.profile.publicBadge : t.profile.privateBadge}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+        {builds.map((build) => {
+          const totalPrice = Number(build.totalPrice ?? 0);
+          const discountedTotal =
+            stats.discountPercent > 0 ? Math.round(totalPrice * (1 - stats.discountPercent / 100)) : totalPrice;
+          return (
+            <Link key={build.id} href={`/builds/${build.id}`}>
+              <Card size="sm" className="transition-colors hover:bg-muted">
+                <CardContent className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="font-medium">{build.name}</div>
+                    <div className="text-sm text-muted-foreground">{t.profile.itemsCount(build.items.length)}</div>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    {stats.discountPercent > 0 && (
+                      <span className="text-xs text-muted-foreground line-through">
+                        {formatPrice(totalPrice, "UZS", locale)}
+                      </span>
+                    )}
+                    <span className="text-sm font-medium">{formatPrice(discountedTotal, "UZS", locale)}</span>
+                    <Badge variant={build.isPublic ? "secondary" : "outline"}>
+                      {build.isPublic ? t.profile.publicBadge : t.profile.privateBadge}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="flex flex-col gap-2">

@@ -68,6 +68,8 @@ export default function BuildPage() {
   const { build } = state;
   const isOwner = auth.status === "authenticated" && auth.userId === build.userId;
   const totalPrice = build.totalPrice ? Number(build.totalPrice) : 0;
+  const discountPercent = isOwner ? (build.user?.discountPercent ?? 0) : 0;
+  const discountedTotal = discountPercent > 0 ? Math.round(totalPrice * (1 - discountPercent / 100)) : totalPrice;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
@@ -97,7 +99,17 @@ export default function BuildPage() {
       <Card>
         <CardContent className="flex items-center justify-between">
           <span className="text-lg font-semibold">{t.common.total}</span>
-          <span className="text-lg font-semibold">{formatPrice(totalPrice, "UZS", locale)}</span>
+          <div className="flex flex-col items-end">
+            {discountPercent > 0 && (
+              <span className="text-sm text-muted-foreground line-through">
+                {formatPrice(totalPrice, "UZS", locale)}
+              </span>
+            )}
+            <span className="text-lg font-semibold">{formatPrice(discountedTotal, "UZS", locale)}</span>
+            {discountPercent > 0 && (
+              <span className="text-xs text-success">{t.buildPage.discountApplied(discountPercent)}</span>
+            )}
+          </div>
         </CardContent>
         {isOwner && (
           <CardFooter className="flex-col items-stretch gap-2 border-t-0 bg-transparent pt-0">

@@ -156,6 +156,8 @@ export interface Build {
   createdAt: string;
   updatedAt: string;
   items: BuildItem[];
+  // Присутствует только когда запрос сделан владельцем сборки (см. BuildsService.findOne)
+  user?: { discountPercent: number };
 }
 
 export interface UserProfile {
