@@ -2,7 +2,8 @@ import type { Component, ComponentType } from "./types";
 
 export type Selections = Partial<Record<ComponentType, Component>>;
 
-const PSU_WATTAGE_BUFFER = 100;
+const PSU_WATTAGE_MIN_BUFFER = 100;
+const PSU_WATTAGE_MARGIN = 1.3;
 
 export function isCompatible(type: ComponentType, component: Component, selections: Selections): boolean {
   const cpu = selections.CPU;
@@ -50,9 +51,11 @@ export function isCompatible(type: ComponentType, component: Component, selectio
     }
 
     case "PSU": {
-      const requiredWattage = (cpu?.cpuSpecs?.tdp ?? 0) + (gpu?.gpuSpecs?.tdp ?? 0);
-      if (requiredWattage === 0 || !component.psuSpecs) return true;
-      return component.psuSpecs.wattage >= requiredWattage + PSU_WATTAGE_BUFFER;
+      const drawWattage = (cpu?.cpuSpecs?.tdp ?? 0) + (gpu?.gpuSpecs?.tdp ?? 0);
+      if (drawWattage === 0 || !component.psuSpecs) return true;
+      // Запас растёт вместе с мощностью сборки (правило ~30%), но не меньше фиксированного минимума
+      const requiredWattage = Math.max(drawWattage * PSU_WATTAGE_MARGIN, drawWattage + PSU_WATTAGE_MIN_BUFFER);
+      return component.psuSpecs.wattage >= requiredWattage;
     }
 
     default:
