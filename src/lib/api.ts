@@ -7,6 +7,7 @@ import type {
   Order,
   OrderStatus,
   ReferralStats,
+  RequiredCategory,
   UserProfile,
 } from "./types";
 
@@ -195,6 +196,27 @@ export async function deleteComponent(id: number, accessToken: string): Promise<
 
 export async function getAdminOrders(accessToken: string): Promise<Order[]> {
   return apiFetch("/orders", accessToken);
+}
+
+// Публичный эндпоинт — нужен всем, кто смотрит сборку, не только админу
+export async function getRequiredCategories(): Promise<RequiredCategory[]> {
+  const res = await fetch(`${API_BASE_URL}/settings/required-categories`);
+  if (!res.ok) {
+    throw new ApiError(res.status, `Failed to load required categories: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateRequiredCategory(
+  type: ComponentType,
+  required: boolean,
+  accessToken: string,
+): Promise<RequiredCategory> {
+  return apiFetch(`/settings/required-categories/${type}`, accessToken, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ required }),
+  });
 }
 
 export async function updateOrderStatus(id: number, status: OrderStatus, accessToken: string): Promise<Order> {

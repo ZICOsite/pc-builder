@@ -111,6 +111,15 @@ export default function AdminDashboardPage() {
             </Badge>
           )}
         </Button>
+        <Button
+          render={<Link href="/admin/settings" />}
+          nativeButton={false}
+          variant="outline"
+          size="lg"
+          className="w-full"
+        >
+          {t.admin.manageSettings}
+        </Button>
       </div>
     </>
   );

@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ApiError, getBuild, getReferralLink, orderBuild, shareBuild } from "@/lib/api";
+import { ApiError, getBuild, getReferralLink, getRequiredCategories, orderBuild, shareBuild } from "@/lib/api";
 import { formatPrice, specSummary } from "@/lib/format";
 import { canOrderBuild, missingCoreTypes } from "@/lib/compatibility";
-import type { Build } from "@/lib/types";
+import type { Build, ComponentType } from "@/lib/types";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { BackButton } from "@/components/back-button";
@@ -18,7 +18,7 @@ type State =
   | { status: "not-found" }
   | { status: "forbidden" }
   | { status: "error" }
-  | { status: "ready"; build: Build };
+  | { status: "ready"; build: Build; requiredTypes: ComponentType[] };
 
 export default function BuildPage() {
   const { id } = useParams<{ id: string }>();
@@ -30,8 +30,11 @@ export default function BuildPage() {
 
   useEffect(() => {
     const accessToken = auth.status === "authenticated" ? auth.accessToken : undefined;
-    getBuild(id, accessToken)
-      .then((build) => setState({ status: "ready", build }))
+    Promise.all([getBuild(id, accessToken), getRequiredCategories()])
+      .then(([build, categories]) => {
+        const requiredTypes = categories.filter((c) => c.required).map((c) => c.type);
+        setState({ status: "ready", build, requiredTypes });
+      })
       .catch((err) => {
         if (err instanceof ApiError && err.status === 404) setState({ status: "not-found" });
         else if (err instanceof ApiError && err.status === 403) setState({ status: "forbidden" });
@@ -44,7 +47,7 @@ export default function BuildPage() {
     setShareState("sharing");
     try {
       const build = state.build.isPublic ? state.build : await shareBuild(state.build.id, auth.accessToken);
-      setState({ status: "ready", build });
+      setState({ status: "ready", build, requiredTypes: state.requiredTypes });
       await navigator.clipboard.writeText(getReferralLink(build.id));
       setShareState("copied");
     } catch {
@@ -79,14 +82,14 @@ export default function BuildPage() {
     return <p className="p-4 text-center text-destructive">{t.buildPage.loadErrorFallback}</p>;
   }
 
-  const { build } = state;
+  const { build, requiredTypes } = state;
   const isOwner = auth.status === "authenticated" && auth.userId === build.userId;
   const totalPrice = build.totalPrice ? Number(build.totalPrice) : 0;
   const discountPercent = isOwner ? (build.user?.discountPercent ?? 0) : 0;
   const discountedTotal = discountPercent > 0 ? Math.round(totalPrice * (1 - discountPercent / 100)) : totalPrice;
-  const missing = missingCoreTypes(build.items);
+  const missing = missingCoreTypes(build.items, requiredTypes);
   const isComplete = missing.length === 0;
-  const canOrder = canOrderBuild(build.items);
+  const canOrder = canOrderBuild(build.items, requiredTypes);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">

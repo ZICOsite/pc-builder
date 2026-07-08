@@ -143,6 +143,7 @@ export interface Dictionary {
     noLowStock: string;
     manageComponents: string;
     manageOrders: string;
+    manageSettings: string;
     componentsTitle: string;
     addComponent: string;
     editComponent: string;
@@ -186,6 +187,13 @@ export interface Dictionary {
       updateErrorFallback: string;
       itemsCount: (count: number) => string;
       discountNote: (percent: number) => string;
+    };
+    settings: {
+      title: string;
+      description: string;
+      loading: string;
+      loadErrorFallback: string;
+      updateErrorFallback: string;
     };
   };
 }
@@ -289,6 +297,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noLowStock: "Всё в достатке",
       manageComponents: "Управление товарами",
       manageOrders: "Заказы",
+      manageSettings: "Настройки реферальной скидки",
       componentsTitle: "Товары",
       addComponent: "Добавить товар",
       editComponent: "Редактировать товар",
@@ -371,6 +380,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
         updateErrorFallback: "Не удалось обновить статус",
         itemsCount: (count) => `${count} позиций`,
         discountNote: (percent) => `скидка ${percent}%`,
+      },
+      settings: {
+        title: "Обязательные категории",
+        description:
+          "Категории, отмеченные галочкой, должны быть в сборке, чтобы её можно было опубликовать (реферальная скидка) и заказать целиком.",
+        loading: "Загрузка настроек...",
+        loadErrorFallback: "Не удалось загрузить настройки",
+        updateErrorFallback: "Не удалось сохранить изменение",
       },
     },
   },
@@ -472,6 +489,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noLowStock: "Everything is well stocked",
       manageComponents: "Manage products",
       manageOrders: "Orders",
+      manageSettings: "Referral discount settings",
       componentsTitle: "Products",
       addComponent: "Add product",
       editComponent: "Edit product",
@@ -554,6 +572,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
         updateErrorFallback: "Failed to update status",
         itemsCount: (count) => `${count} items`,
         discountNote: (percent) => `${percent}% discount`,
+      },
+      settings: {
+        title: "Required categories",
+        description:
+          "Categories with the checkbox checked must be included in a build for it to be publishable (referral discount) and orderable as a whole.",
+        loading: "Loading settings...",
+        loadErrorFallback: "Failed to load settings",
+        updateErrorFallback: "Failed to save the change",
       },
     },
   },
@@ -655,6 +681,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noLowStock: "Hammasi yetarli",
       manageComponents: "Tovarlarni boshqarish",
       manageOrders: "Buyurtmalar",
+      manageSettings: "Referal chegirma sozlamalari",
       componentsTitle: "Tovarlar",
       addComponent: "Tovar qo'shish",
       editComponent: "Tovarni tahrirlash",
@@ -737,6 +764,14 @@ export const dictionaries: Record<Locale, Dictionary> = {
         updateErrorFallback: "Holatni yangilab bo'lmadi",
         itemsCount: (count) => `${count} ta band`,
         discountNote: (percent) => `${percent}% chegirma`,
+      },
+      settings: {
+        title: "Majburiy kategoriyalar",
+        description:
+          "Belgilangan kategoriyalar sborkada bo'lishi shart — aks holda uni e'lon qilib (referal chegirma) bo'lmaydi va to'liq buyurtma qilib bo'lmaydi.",
+        loading: "Sozlamalar yuklanmoqda...",
+        loadErrorFallback: "Sozlamalarni yuklab bo'lmadi",
+        updateErrorFallback: "O'zgarishni saqlab bo'lmadi",
       },
     },
   },

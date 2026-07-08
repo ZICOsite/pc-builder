@@ -1,20 +1,20 @@
 import type { BuildItem, Component, ComponentType } from "./types";
-import { CORE_COMPONENT_TYPES } from "./types";
 
 export type Selections = Partial<Record<ComponentType, Component>>;
 
-// Категории core-сборки, которых не хватает в этом наборе items — пустой массив значит сборка полная
-export function missingCoreTypes(items: BuildItem[]): ComponentType[] {
+// Категории обязательного набора, которых не хватает в этом наборе items — пустой массив значит сборка полная.
+// requiredTypes приходит с бэкенда (GET /settings/required-categories), настраивается админом.
+export function missingCoreTypes(items: BuildItem[], requiredTypes: ComponentType[]): ComponentType[] {
   const presentTypes = new Set(items.map((item) => item.component.type));
-  return CORE_COMPONENT_TYPES.filter((type) => !presentTypes.has(type));
+  return requiredTypes.filter((type) => !presentTypes.has(type));
 }
 
-// Заказать можно полностью собранный ПК (все core-категории) или набор из одной периферии
-// (0 core-категорий) — недобранный ПК (часть core-категорий) заказать нельзя, см. builds.service.ts
-export function canOrderBuild(items: BuildItem[]): boolean {
+// Заказать можно полностью собранный ПК (все обязательные категории) или набор из одной периферии
+// (0 обязательных категорий) — недобранный ПК (часть обязательных категорий) заказать нельзя, см. builds.service.ts
+export function canOrderBuild(items: BuildItem[], requiredTypes: ComponentType[]): boolean {
   const presentTypes = new Set(items.map((item) => item.component.type));
-  const coreCount = CORE_COMPONENT_TYPES.filter((type) => presentTypes.has(type)).length;
-  return coreCount === 0 || coreCount === CORE_COMPONENT_TYPES.length;
+  const coreCount = requiredTypes.filter((type) => presentTypes.has(type)).length;
+  return coreCount === 0 || coreCount === requiredTypes.length;
 }
 
 const PSU_WATTAGE_MIN_BUFFER = 100;
