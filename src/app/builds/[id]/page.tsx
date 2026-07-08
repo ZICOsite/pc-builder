@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ApiError, getBuild, getReferralLink, getRequiredCategories, orderBuild, shareBuild } from "@/lib/api";
@@ -27,6 +27,9 @@ export default function BuildPage() {
   const [state, setState] = useState<State>({ status: "loading" });
   const [shareState, setShareState] = useState<"idle" | "sharing" | "copied" | "error">("idle");
   const [orderState, setOrderState] = useState<"idle" | "ordering" | "ordered" | "error">("idle");
+  // React-состояние обновляется асинхронно и не успевает задизейблить кнопку между двумя
+  // быстрыми тапами — ref даёт мгновенную синхронную защиту от повторной отправки заказа.
+  const orderingRef = useRef(false);
 
   useEffect(() => {
     const accessToken = auth.status === "authenticated" ? auth.accessToken : undefined;
@@ -57,12 +60,16 @@ export default function BuildPage() {
 
   async function handleOrder() {
     if (auth.status !== "authenticated" || state.status !== "ready") return;
+    if (orderingRef.current) return;
+    orderingRef.current = true;
     setOrderState("ordering");
     try {
       await orderBuild(state.build.id, auth.accessToken);
       setOrderState("ordered");
     } catch {
       setOrderState("error");
+    } finally {
+      orderingRef.current = false;
     }
   }
 
