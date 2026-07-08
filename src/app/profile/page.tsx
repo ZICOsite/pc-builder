@@ -1,15 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
-import { getMyBuilds, getProfile, getReferralStats } from "@/lib/api";
-import { formatPrice } from "@/lib/format";
+import { deleteBuild, getMyBuilds, getProfile, getReferralStats } from "@/lib/api";
 import type { Build, ReferralStats, UserProfile } from "@/lib/types";
 import { BackButton } from "@/components/back-button";
+import { SwipeableBuildRow } from "@/components/swipeable-build-row";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 type State =
   | { status: "loading" }
@@ -48,6 +46,17 @@ export default function ProfilePage() {
   const displayName =
     [profile.firstName, profile.lastName].filter(Boolean).join(" ") || profile.username || t.profile.noName;
 
+  async function handleDeleteBuild(buildId: string) {
+    if (auth.status !== "authenticated") return;
+    setState({ status: "ready", profile, stats, builds: builds.filter((b) => b.id !== buildId) });
+    try {
+      await deleteBuild(buildId, auth.accessToken);
+    } catch {
+      setState({ status: "ready", profile, stats, builds });
+      window.alert(t.profile.deleteErrorFallback);
+    }
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4">
       <BackButton fallbackHref="/" />
@@ -77,27 +86,19 @@ export default function ProfilePage() {
           const discountedTotal =
             stats.discountPercent > 0 ? Math.round(totalPrice * (1 - stats.discountPercent / 100)) : totalPrice;
           return (
-            <Link key={build.id} href={`/builds/${build.id}`}>
-              <Card size="sm" className="transition-colors hover:bg-muted">
-                <CardContent className="flex items-center justify-between gap-2">
-                  <div>
-                    <div className="font-medium">{build.name}</div>
-                    <div className="text-sm text-muted-foreground">{t.profile.itemsCount(build.items.length)}</div>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1">
-                    {stats.discountPercent > 0 && (
-                      <span className="text-xs text-muted-foreground line-through">
-                        {formatPrice(totalPrice, "UZS", locale)}
-                      </span>
-                    )}
-                    <span className="text-sm font-medium">{formatPrice(discountedTotal, "UZS", locale)}</span>
-                    <Badge variant={build.isPublic ? "secondary" : "outline"}>
-                      {build.isPublic ? t.profile.publicBadge : t.profile.privateBadge}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+            <SwipeableBuildRow
+              key={build.id}
+              build={build}
+              totalPrice={totalPrice}
+              discountedTotal={discountedTotal}
+              discountPercent={stats.discountPercent}
+              locale={locale}
+              itemsLabel={t.profile.itemsCount(build.items.length)}
+              publicLabel={t.profile.publicBadge}
+              privateLabel={t.profile.privateBadge}
+              deleteLabel={t.profile.deleteBuild}
+              onDelete={handleDeleteBuild}
+            />
           );
         })}
       </div>

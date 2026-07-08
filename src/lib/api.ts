@@ -92,6 +92,10 @@ export async function getMyBuilds(accessToken: string): Promise<Build[]> {
   return apiFetch("/builds", accessToken);
 }
 
+export async function deleteBuild(id: string, accessToken: string): Promise<void> {
+  await apiFetch(`/builds/${id}`, accessToken, { method: "DELETE" });
+}
+
 // Синхронизирует состав уже существующей сборки с текущим выбором (используется при
 // "продолжении" сборки в конфигураторе) — добавляет новые позиции, убирает снятые.
 export async function updateBuildItems(

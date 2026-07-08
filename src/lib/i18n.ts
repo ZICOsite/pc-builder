@@ -129,6 +129,8 @@ export interface Dictionary {
     itemsCount: (count: number) => string;
     publicBadge: string;
     privateBadge: string;
+    deleteBuild: string;
+    deleteErrorFallback: string;
   };
   errors: { authFailed: string };
   admin: {
@@ -283,6 +285,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       itemsCount: (count) => `${count} компонентов`,
       publicBadge: "Опубликована",
       privateBadge: "Приватная",
+      deleteBuild: "Удалить сборку",
+      deleteErrorFallback: "Не удалось удалить сборку",
     },
     errors: { authFailed: "Ошибка авторизации" },
     admin: {
@@ -475,6 +479,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       itemsCount: (count) => `${count} components`,
       publicBadge: "Published",
       privateBadge: "Private",
+      deleteBuild: "Delete build",
+      deleteErrorFallback: "Failed to delete the build",
     },
     errors: { authFailed: "Authentication failed" },
     admin: {
@@ -667,6 +673,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       itemsCount: (count) => `${count} komponent`,
       publicBadge: "Nashr qilingan",
       privateBadge: "Shaxsiy",
+      deleteBuild: "Yig'ilmani o'chirish",
+      deleteErrorFallback: "Yig'ilmani o'chirib bo'lmadi",
     },
     errors: { authFailed: "Avtorizatsiya xatosi" },
     admin: {
