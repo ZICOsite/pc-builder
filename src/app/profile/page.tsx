@@ -73,7 +73,7 @@ export default function ProfilePage() {
         <div className="text-sm text-muted-foreground">{t.profile.myBuildsTitle}</div>
         {builds.length === 0 && <p className="text-sm text-muted-foreground">{t.profile.noBuilds}</p>}
         {builds.map((build) => {
-          const totalPrice = Number(build.totalPrice ?? 0);
+          const totalPrice = Number(build.totalPrice);
           const discountedTotal =
             stats.discountPercent > 0 ? Math.round(totalPrice * (1 - stats.discountPercent / 100)) : totalPrice;
           return (

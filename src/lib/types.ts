@@ -158,8 +158,9 @@ export interface Build {
   name: string;
   description: string | null;
   isPublic: boolean;
-  totalPrice: string | null;
-  snapshot: unknown;
+  // Считается на бэкенде из актуальных цен компонентов при каждом запросе, не хранится и не
+  // "замораживается" — в отличие от Order.totalPrice, который фиксируется на момент покупки.
+  totalPrice: string;
   createdAt: string;
   updatedAt: string;
   items: BuildItem[];

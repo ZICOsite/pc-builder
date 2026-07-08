@@ -91,7 +91,7 @@ export default function BuildPage() {
 
   const { build, requiredTypes } = state;
   const isOwner = auth.status === "authenticated" && auth.userId === build.userId;
-  const totalPrice = build.totalPrice ? Number(build.totalPrice) : 0;
+  const totalPrice = Number(build.totalPrice);
   const discountPercent = isOwner ? (build.user?.discountPercent ?? 0) : 0;
   const discountedTotal = discountPercent > 0 ? Math.round(totalPrice * (1 - discountPercent / 100)) : totalPrice;
   const missing = missingCoreTypes(build.items, requiredTypes);
