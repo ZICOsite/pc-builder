@@ -211,6 +211,26 @@ export interface AdminDashboard {
   pendingOrders: number;
 }
 
+export type StatsRangeDays = 7 | 30 | 90;
+
+export interface AdminStatsPoint {
+  date: string;
+  revenue: number;
+  orders: number;
+  newUsers: number;
+}
+
+export interface AdminUser {
+  id: number;
+  telegramId: string;
+  username: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  discountPercent: number;
+  createdAt: string;
+  _count: { builds: number; orders: number; referralsSent: number };
+}
+
 export type OrderStatus = "PENDING" | "COMPLETED" | "CANCELLED";
 
 export interface OrderItemSnapshot {

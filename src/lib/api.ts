@@ -1,5 +1,7 @@
 import type {
   AdminDashboard,
+  AdminStatsPoint,
+  AdminUser,
   Build,
   Component,
   ComponentInput,
@@ -8,6 +10,7 @@ import type {
   OrderStatus,
   ReferralStats,
   RequiredCategory,
+  StatsRangeDays,
   UserProfile,
 } from "./types";
 
@@ -200,6 +203,14 @@ export async function deleteComponent(id: number, accessToken: string): Promise<
 
 export async function getAdminOrders(accessToken: string): Promise<Order[]> {
   return apiFetch("/orders", accessToken);
+}
+
+export async function getAdminUsers(accessToken: string): Promise<AdminUser[]> {
+  return apiFetch("/admin/users", accessToken);
+}
+
+export async function getAdminStats(days: StatsRangeDays, accessToken: string): Promise<AdminStatsPoint[]> {
+  return apiFetch(`/admin/stats?days=${days}`, accessToken);
 }
 
 // Публичный эндпоинт — нужен всем, кто смотрит сборку, не только админу

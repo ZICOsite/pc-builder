@@ -120,6 +120,24 @@ export default function AdminDashboardPage() {
         >
           {t.admin.manageSettings}
         </Button>
+        <Button
+          render={<Link href="/admin/users" />}
+          nativeButton={false}
+          variant="outline"
+          size="lg"
+          className="w-full"
+        >
+          {t.admin.manageUsers}
+        </Button>
+        <Button
+          render={<Link href="/admin/stats" />}
+          nativeButton={false}
+          variant="outline"
+          size="lg"
+          className="w-full"
+        >
+          {t.admin.manageStats}
+        </Button>
       </div>
     </>
   );

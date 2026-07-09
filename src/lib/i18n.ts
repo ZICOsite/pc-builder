@@ -146,6 +146,8 @@ export interface Dictionary {
     manageComponents: string;
     manageOrders: string;
     manageSettings: string;
+    manageUsers: string;
+    manageStats: string;
     componentsTitle: string;
     addComponent: string;
     editComponent: string;
@@ -196,6 +198,27 @@ export interface Dictionary {
       loading: string;
       loadErrorFallback: string;
       updateErrorFallback: string;
+    };
+    users: {
+      title: string;
+      loading: string;
+      loadErrorFallback: string;
+      empty: string;
+      unnamed: string;
+      discountLabel: string;
+      buildsLabel: (count: number) => string;
+      ordersLabel: (count: number) => string;
+      referralsLabel: (count: number) => string;
+      joinedLabel: string;
+    };
+    stats: {
+      title: string;
+      loading: string;
+      loadErrorFallback: string;
+      rangeLabel: Record<7 | 30 | 90, string>;
+      revenueTitle: string;
+      ordersTitle: string;
+      newUsersTitle: string;
     };
   };
 }
@@ -302,6 +325,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       manageComponents: "Управление товарами",
       manageOrders: "Заказы",
       manageSettings: "Настройки реферальной скидки",
+      manageUsers: "Пользователи",
+      manageStats: "Статистика",
       componentsTitle: "Товары",
       addComponent: "Добавить товар",
       editComponent: "Редактировать товар",
@@ -392,6 +417,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         loading: "Загрузка настроек...",
         loadErrorFallback: "Не удалось загрузить настройки",
         updateErrorFallback: "Не удалось сохранить изменение",
+      },
+      users: {
+        title: "Пользователи",
+        loading: "Загрузка пользователей...",
+        loadErrorFallback: "Не удалось загрузить пользователей",
+        empty: "Пользователей пока нет",
+        unnamed: "Без имени",
+        discountLabel: "Скидка",
+        buildsLabel: (count) => `${count} сборок`,
+        ordersLabel: (count) => `${count} заказов`,
+        referralsLabel: (count) => `${count} рефералов`,
+        joinedLabel: "Регистрация",
+      },
+      stats: {
+        title: "Статистика",
+        loading: "Загрузка статистики...",
+        loadErrorFallback: "Не удалось загрузить статистику",
+        rangeLabel: { 7: "7 дней", 30: "30 дней", 90: "90 дней" },
+        revenueTitle: "Выручка",
+        ordersTitle: "Заказы",
+        newUsersTitle: "Новые пользователи",
       },
     },
   },
@@ -496,6 +542,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       manageComponents: "Manage products",
       manageOrders: "Orders",
       manageSettings: "Referral discount settings",
+      manageUsers: "Users",
+      manageStats: "Statistics",
       componentsTitle: "Products",
       addComponent: "Add product",
       editComponent: "Edit product",
@@ -586,6 +634,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         loading: "Loading settings...",
         loadErrorFallback: "Failed to load settings",
         updateErrorFallback: "Failed to save the change",
+      },
+      users: {
+        title: "Users",
+        loading: "Loading users...",
+        loadErrorFallback: "Failed to load users",
+        empty: "No users yet",
+        unnamed: "No name",
+        discountLabel: "Discount",
+        buildsLabel: (count) => `${count} builds`,
+        ordersLabel: (count) => `${count} orders`,
+        referralsLabel: (count) => `${count} referrals`,
+        joinedLabel: "Joined",
+      },
+      stats: {
+        title: "Statistics",
+        loading: "Loading statistics...",
+        loadErrorFallback: "Failed to load statistics",
+        rangeLabel: { 7: "7 days", 30: "30 days", 90: "90 days" },
+        revenueTitle: "Revenue",
+        ordersTitle: "Orders",
+        newUsersTitle: "New users",
       },
     },
   },
@@ -690,6 +759,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       manageComponents: "Tovarlarni boshqarish",
       manageOrders: "Buyurtmalar",
       manageSettings: "Referal chegirma sozlamalari",
+      manageUsers: "Foydalanuvchilar",
+      manageStats: "Statistika",
       componentsTitle: "Tovarlar",
       addComponent: "Tovar qo'shish",
       editComponent: "Tovarni tahrirlash",
@@ -780,6 +851,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         loading: "Sozlamalar yuklanmoqda...",
         loadErrorFallback: "Sozlamalarni yuklab bo'lmadi",
         updateErrorFallback: "O'zgarishni saqlab bo'lmadi",
+      },
+      users: {
+        title: "Foydalanuvchilar",
+        loading: "Foydalanuvchilar yuklanmoqda...",
+        loadErrorFallback: "Foydalanuvchilarni yuklab bo'lmadi",
+        empty: "Hozircha foydalanuvchilar yo'q",
+        unnamed: "Ismi yo'q",
+        discountLabel: "Chegirma",
+        buildsLabel: (count) => `${count} ta sborka`,
+        ordersLabel: (count) => `${count} ta buyurtma`,
+        referralsLabel: (count) => `${count} ta referal`,
+        joinedLabel: "Ro'yxatdan o'tgan",
+      },
+      stats: {
+        title: "Statistika",
+        loading: "Statistika yuklanmoqda...",
+        loadErrorFallback: "Statistikani yuklab bo'lmadi",
+        rangeLabel: { 7: "7 kun", 30: "30 kun", 90: "90 kun" },
+        revenueTitle: "Daromad",
+        ordersTitle: "Buyurtmalar",
+        newUsersTitle: "Yangi foydalanuvchilar",
       },
     },
   },
