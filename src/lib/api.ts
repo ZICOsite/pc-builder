@@ -9,6 +9,7 @@ import type {
   ComponentType,
   Order,
   OrderStatus,
+  PaginatedComponents,
   ReferralStats,
   RequiredCategory,
   StatsRangeDays,
@@ -66,6 +67,35 @@ export async function getComponents(type: ComponentType): Promise<Component[]> {
   const res = await fetch(`${API_BASE_URL}/components?type=${type}`);
   if (!res.ok) {
     throw new ApiError(res.status, `Failed to load components: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function getComponentsPage(
+  type: ComponentType,
+  params: { page: number; limit: number; search?: string; brand?: string; sortOrder: "asc" | "desc" },
+): Promise<PaginatedComponents> {
+  const query = new URLSearchParams({
+    type,
+    page: String(params.page),
+    limit: String(params.limit),
+    sortBy: "price",
+    sortOrder: params.sortOrder,
+  });
+  if (params.search) query.set("search", params.search);
+  if (params.brand) query.set("brand", params.brand);
+
+  const res = await fetch(`${API_BASE_URL}/components?${query.toString()}`);
+  if (!res.ok) {
+    throw new ApiError(res.status, `Failed to load components: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function getComponentBrands(type: ComponentType): Promise<string[]> {
+  const res = await fetch(`${API_BASE_URL}/components/brands?type=${type}`);
+  if (!res.ok) {
+    throw new ApiError(res.status, `Failed to load brands: ${res.status}`);
   }
   return res.json();
 }

@@ -143,6 +143,13 @@ export interface Component {
   coolingSpecs: CoolingSpecs | null;
 }
 
+export interface PaginatedComponents {
+  items: Component[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface BuildItem {
   id: number;
   buildId: string;
