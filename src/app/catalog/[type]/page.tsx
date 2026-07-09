@@ -31,6 +31,7 @@ export default function CatalogCategoryPage() {
   const [state, setState] = useState<State>({ status: "loading" });
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const [brandFilter, setBrandFilter] = useState<string>("ALL");
   const [selected, setSelected] = useState<Component | null>(null);
 
   const componentType = isComponentType(type) ? type : null;
@@ -39,21 +40,29 @@ export default function CatalogCategoryPage() {
     if (!componentType) return;
     setState({ status: "loading" });
     setSearch("");
+    setBrandFilter("ALL");
     getComponents(componentType)
       .then((items) => setState({ status: "ready", items }))
       .catch(() => setState({ status: "error" }));
   }, [componentType]);
 
+  const brands = useMemo(() => {
+    if (state.status !== "ready") return [];
+    return Array.from(new Set(state.items.map((item) => item.brand))).sort((a, b) => a.localeCompare(b));
+  }, [state]);
+
   const visibleItems = useMemo(() => {
     if (state.status !== "ready") return [];
     const query = search.trim().toLowerCase();
-    const filtered = query
-      ? state.items.filter((item) => `${item.brand} ${item.name}`.toLowerCase().includes(query))
-      : state.items;
+    const filtered = state.items.filter((item) => {
+      const matchesQuery = !query || `${item.brand} ${item.name}`.toLowerCase().includes(query);
+      const matchesBrand = brandFilter === "ALL" || item.brand === brandFilter;
+      return matchesQuery && matchesBrand;
+    });
     return [...filtered].sort((a, b) =>
       sortOrder === "asc" ? Number(a.price) - Number(b.price) : Number(b.price) - Number(a.price),
     );
-  }, [state, search, sortOrder]);
+  }, [state, search, sortOrder, brandFilter]);
 
   if (!componentType) {
     return <p className="p-4 text-center text-destructive">{t.catalog.notFound}</p>;
@@ -90,6 +99,32 @@ export default function CatalogCategoryPage() {
           >
             {sortOrder === "asc" ? <ArrowUpNarrowWide /> : <ArrowDownWideNarrow />}
           </Button>
+        </div>
+      )}
+
+      {brands.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <Button
+            type="button"
+            size="sm"
+            variant={brandFilter === "ALL" ? "default" : "outline"}
+            className="shrink-0"
+            onClick={() => setBrandFilter("ALL")}
+          >
+            {t.catalog.allBrands}
+          </Button>
+          {brands.map((brand) => (
+            <Button
+              key={brand}
+              type="button"
+              size="sm"
+              variant={brandFilter === brand ? "default" : "outline"}
+              className="shrink-0"
+              onClick={() => setBrandFilter(brand)}
+            >
+              {brand}
+            </Button>
+          ))}
         </div>
       )}
 

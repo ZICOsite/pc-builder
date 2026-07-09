@@ -75,6 +75,7 @@ export interface Dictionary {
     noResults: string;
     sortPriceAsc: string;
     sortPriceDesc: string;
+    allBrands: string;
   };
   configurator: {
     loading: string;
@@ -259,6 +260,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noResults: "Ничего не найдено",
       sortPriceAsc: "Сначала дешевле",
       sortPriceDesc: "Сначала дороже",
+      allBrands: "Все бренды",
     },
     configurator: {
       loading: "Загрузка компонентов...",
@@ -483,6 +485,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noResults: "No results found",
       sortPriceAsc: "Price: low to high",
       sortPriceDesc: "Price: high to low",
+      allBrands: "All brands",
     },
     configurator: {
       loading: "Loading components...",
@@ -707,6 +710,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       noResults: "Hech narsa topilmadi",
       sortPriceAsc: "Avval arzoni",
       sortPriceDesc: "Avval qimmati",
+      allBrands: "Barcha brendlar",
     },
     configurator: {
       loading: "Komponentlar yuklanmoqda...",
