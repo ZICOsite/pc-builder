@@ -220,6 +220,31 @@ export interface AdminStatsPoint {
   newUsers: number;
 }
 
+export interface TopProduct {
+  componentId: number;
+  name: string;
+  brand: string;
+  quantitySold: number;
+  revenue: number;
+}
+
+export interface TopBuyer {
+  buyer: {
+    id: number;
+    telegramId: string;
+    username: string | null;
+    firstName: string | null;
+    lastName: string | null;
+  };
+  orders: number;
+  totalSpent: number;
+}
+
+export interface AdminLeaderboards {
+  topProducts: TopProduct[];
+  topBuyers: TopBuyer[];
+}
+
 export interface AdminUser {
   id: number;
   telegramId: string;

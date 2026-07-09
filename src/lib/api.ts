@@ -1,5 +1,6 @@
 import type {
   AdminDashboard,
+  AdminLeaderboards,
   AdminStatsPoint,
   AdminUser,
   Build,
@@ -211,6 +212,10 @@ export async function getAdminUsers(accessToken: string): Promise<AdminUser[]> {
 
 export async function getAdminStats(days: StatsRangeDays, accessToken: string): Promise<AdminStatsPoint[]> {
   return apiFetch(`/admin/stats?days=${days}`, accessToken);
+}
+
+export async function getAdminLeaderboards(accessToken: string): Promise<AdminLeaderboards> {
+  return apiFetch("/admin/leaderboards", accessToken);
 }
 
 // Публичный эндпоинт — нужен всем, кто смотрит сборку, не только админу

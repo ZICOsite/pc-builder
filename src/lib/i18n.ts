@@ -219,6 +219,13 @@ export interface Dictionary {
       revenueTitle: string;
       ordersTitle: string;
       newUsersTitle: string;
+      topProductsTitle: string;
+      topBuyersTitle: string;
+      leaderboardLoading: string;
+      leaderboardLoadErrorFallback: string;
+      leaderboardEmpty: string;
+      quantitySoldLabel: (count: number) => string;
+      ordersCountLabel: (count: number) => string;
     };
   };
 }
@@ -438,6 +445,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
         revenueTitle: "Выручка",
         ordersTitle: "Заказы",
         newUsersTitle: "Новые пользователи",
+        topProductsTitle: "Топ товаров",
+        topBuyersTitle: "Топ покупателей",
+        leaderboardLoading: "Загрузка...",
+        leaderboardLoadErrorFallback: "Не удалось загрузить рейтинг",
+        leaderboardEmpty: "Пока нет завершённых заказов",
+        quantitySoldLabel: (count) => `${count} шт. продано`,
+        ordersCountLabel: (count) => `${count} заказов`,
       },
     },
   },
@@ -655,6 +669,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
         revenueTitle: "Revenue",
         ordersTitle: "Orders",
         newUsersTitle: "New users",
+        topProductsTitle: "Top products",
+        topBuyersTitle: "Top buyers",
+        leaderboardLoading: "Loading...",
+        leaderboardLoadErrorFallback: "Failed to load leaderboard",
+        leaderboardEmpty: "No completed orders yet",
+        quantitySoldLabel: (count) => `${count} sold`,
+        ordersCountLabel: (count) => `${count} orders`,
       },
     },
   },
@@ -872,6 +893,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
         revenueTitle: "Daromad",
         ordersTitle: "Buyurtmalar",
         newUsersTitle: "Yangi foydalanuvchilar",
+        topProductsTitle: "Eng ko'p sotilgan tovarlar",
+        topBuyersTitle: "Top xaridorlar",
+        leaderboardLoading: "Yuklanmoqda...",
+        leaderboardLoadErrorFallback: "Reytingni yuklab bo'lmadi",
+        leaderboardEmpty: "Hozircha yakunlangan buyurtmalar yo'q",
+        quantitySoldLabel: (count) => `${count} ta sotilgan`,
+        ordersCountLabel: (count) => `${count} ta buyurtma`,
       },
     },
   },

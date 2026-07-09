@@ -4,15 +4,19 @@ import { useEffect, useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
-import { getAdminStats } from "@/lib/api";
+import { getAdminLeaderboards, getAdminStats } from "@/lib/api";
 import { formatPrice } from "@/lib/format";
-import type { AdminStatsPoint, StatsRangeDays } from "@/lib/types";
+import type { AdminLeaderboards, AdminStatsPoint, StatsRangeDays } from "@/lib/types";
 import { BackButton } from "@/components/back-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 type State = { status: "loading" } | { status: "error" } | { status: "ready"; points: AdminStatsPoint[] };
+type LeaderboardState =
+  | { status: "loading" }
+  | { status: "error" }
+  | { status: "ready"; data: AdminLeaderboards };
 
 const RANGES: StatsRangeDays[] = [7, 30, 90];
 
@@ -21,6 +25,7 @@ export default function AdminStatsPage() {
   const { locale, t } = useLocale();
   const [range, setRange] = useState<StatsRangeDays>(30);
   const [state, setState] = useState<State>({ status: "loading" });
+  const [leaderboards, setLeaderboards] = useState<LeaderboardState>({ status: "loading" });
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
@@ -29,6 +34,13 @@ export default function AdminStatsPage() {
       .then((points) => setState({ status: "ready", points }))
       .catch(() => setState({ status: "error" }));
   }, [auth, range]);
+
+  useEffect(() => {
+    if (auth.status !== "authenticated") return;
+    getAdminLeaderboards(auth.accessToken)
+      .then((data) => setLeaderboards({ status: "ready", data }))
+      .catch(() => setLeaderboards({ status: "error" }));
+  }, [auth]);
 
   function formatTick(date: string) {
     return new Date(date).toLocaleDateString(locale, { day: "numeric", month: "short" });
@@ -162,6 +174,90 @@ export default function AdminStatsPage() {
           </Card>
         </div>
       )}
+
+      <div className="flex flex-col gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t.admin.stats.topProductsTitle}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leaderboards.status === "loading" && (
+              <p className="text-center text-sm text-muted-foreground">{t.admin.stats.leaderboardLoading}</p>
+            )}
+            {leaderboards.status === "error" && (
+              <p className="text-center text-sm text-destructive">{t.admin.stats.leaderboardLoadErrorFallback}</p>
+            )}
+            {leaderboards.status === "ready" && leaderboards.data.topProducts.length === 0 && (
+              <p className="text-center text-sm text-muted-foreground">{t.admin.stats.leaderboardEmpty}</p>
+            )}
+            {leaderboards.status === "ready" && leaderboards.data.topProducts.length > 0 && (
+              <div className="flex flex-col gap-3">
+                {leaderboards.data.topProducts.map((product, index) => (
+                  <div key={product.componentId} className="flex items-center justify-between gap-2 text-sm">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-muted-foreground">#{index + 1}</span>
+                      <span className="font-medium">
+                        {product.brand} {product.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="font-medium">{t.admin.stats.quantitySoldLabel(product.quantitySold)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatPrice(product.revenue, "UZS", locale)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {t.admin.stats.topBuyersTitle}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {leaderboards.status === "loading" && (
+              <p className="text-center text-sm text-muted-foreground">{t.admin.stats.leaderboardLoading}</p>
+            )}
+            {leaderboards.status === "error" && (
+              <p className="text-center text-sm text-destructive">{t.admin.stats.leaderboardLoadErrorFallback}</p>
+            )}
+            {leaderboards.status === "ready" && leaderboards.data.topBuyers.length === 0 && (
+              <p className="text-center text-sm text-muted-foreground">{t.admin.stats.leaderboardEmpty}</p>
+            )}
+            {leaderboards.status === "ready" && leaderboards.data.topBuyers.length > 0 && (
+              <div className="flex flex-col gap-3">
+                {leaderboards.data.topBuyers.map((entry, index) => {
+                  const name =
+                    [entry.buyer.firstName, entry.buyer.lastName].filter(Boolean).join(" ") ||
+                    entry.buyer.username ||
+                    `ID ${entry.buyer.telegramId}`;
+                  return (
+                    <div key={entry.buyer.id} className="flex items-center justify-between gap-2 text-sm">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-muted-foreground">#{index + 1}</span>
+                        <span className="font-medium">{name}</span>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="font-medium">{formatPrice(entry.totalSpent, "UZS", locale)}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {t.admin.stats.ordersCountLabel(entry.orders)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 }
