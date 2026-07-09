@@ -65,7 +65,13 @@ export interface Dictionary {
   common: { back: string; total: string };
   categories: Record<ComponentType, string>;
   specs: { cores: string; gb: string; watts: string; hz: string; dpi: string };
-  home: { title: string; subtitle: string };
+  home: {
+    title: string;
+    subtitle: string;
+    buildCta: string;
+    continueBuildLabel: string;
+    continueBuildAction: string;
+  };
   catalog: {
     loading: string;
     loadErrorFallback: string;
@@ -250,7 +256,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Гарнитура",
     },
     specs: { cores: "ядер", gb: "ГБ", watts: "Вт", hz: "Гц", dpi: "DPI" },
-    home: { title: "Каталог", subtitle: "Выберите категорию, чтобы посмотреть товары" },
+    home: {
+      title: "Каталог",
+      subtitle: "Выберите категорию, чтобы посмотреть товары",
+      buildCta: "Собрать ПК",
+      continueBuildLabel: "Незавершённая сборка",
+      continueBuildAction: "Продолжить →",
+    },
     catalog: {
       loading: "Загрузка товаров...",
       loadErrorFallback: "Не удалось загрузить товары",
@@ -475,7 +487,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Headset",
     },
     specs: { cores: "cores", gb: "GB", watts: "W", hz: "Hz", dpi: "DPI" },
-    home: { title: "Catalog", subtitle: "Pick a category to browse products" },
+    home: {
+      title: "Catalog",
+      subtitle: "Pick a category to browse products",
+      buildCta: "Build a PC",
+      continueBuildLabel: "Unfinished build",
+      continueBuildAction: "Continue →",
+    },
     catalog: {
       loading: "Loading products...",
       loadErrorFallback: "Failed to load products",
@@ -700,7 +718,13 @@ export const dictionaries: Record<Locale, Dictionary> = {
       HEADSET: "Garnitura",
     },
     specs: { cores: "yadro", gb: "GB", watts: "Vt", hz: "Gts", dpi: "DPI" },
-    home: { title: "Katalog", subtitle: "Tovarlarni ko'rish uchun kategoriyani tanlang" },
+    home: {
+      title: "Katalog",
+      subtitle: "Tovarlarni ko'rish uchun kategoriyani tanlang",
+      buildCta: "PK yig'ish",
+      continueBuildLabel: "Tugallanmagan sborka",
+      continueBuildAction: "Davom ettirish →",
+    },
     catalog: {
       loading: "Tovarlar yuklanmoqda...",
       loadErrorFallback: "Tovarlarni yuklab bo'lmadi",
