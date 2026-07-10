@@ -1,7 +1,8 @@
 "use client";
 
 import { useLocale } from "@/components/locale-provider";
-import { formatPrice, specDetails } from "@/lib/format";
+import { YoutubeIcon } from "@/components/youtube-icon";
+import { formatPrice, specDetails, youtubeSearchUrl } from "@/lib/format";
 import type { Component } from "@/lib/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -45,6 +46,16 @@ export function ProductDialog({ component, onOpenChange }: ProductDialogProps) {
             {formatPrice(Number(component.price), component.currency, locale)}
           </span>
         </div>
+
+        <a
+          href={youtubeSearchUrl(component)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 rounded-lg border border-border p-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <YoutubeIcon className="size-4" />
+          {t.catalog.searchOnYoutube}
+        </a>
       </DialogContent>
     </Dialog>
   );

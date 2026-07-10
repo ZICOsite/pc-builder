@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDownWideNarrow, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { useLocale } from "@/components/locale-provider";
-import { formatPrice, specSummary } from "@/lib/format";
+import { YoutubeIcon } from "@/components/youtube-icon";
+import { formatPrice, specSummary, youtubeSearchUrl } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Component, ComponentType } from "@/lib/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -92,21 +93,34 @@ export function ComponentPickerDialog({
             </p>
           )}
           {pageItems.map((c) => (
-            <button
+            <div
               key={c.id}
-              type="button"
-              onClick={() => onSelect(c)}
               className={cn(
-                "flex items-center justify-between gap-2 rounded-lg p-2 text-left text-sm transition-colors hover:bg-muted",
+                "flex items-center gap-1 rounded-lg text-sm transition-colors hover:bg-muted",
                 selectedId === c.id && "bg-accent text-accent-foreground",
               )}
             >
-              <span>
-                {c.brand} {c.name}
-                {specSummary(c, t) && <span className="text-muted-foreground"> · {specSummary(c, t)}</span>}
-              </span>
-              <span className="shrink-0 whitespace-nowrap">{formatPrice(Number(c.price), c.currency, locale)}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => onSelect(c)}
+                className="flex flex-1 items-center justify-between gap-2 p-2 text-left"
+              >
+                <span>
+                  {c.brand} {c.name}
+                  {specSummary(c, t) && <span className="text-muted-foreground"> · {specSummary(c, t)}</span>}
+                </span>
+                <span className="shrink-0 whitespace-nowrap">{formatPrice(Number(c.price), c.currency, locale)}</span>
+              </button>
+              <a
+                href={youtubeSearchUrl(c)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={t.catalog.searchOnYoutube}
+                className="shrink-0 rounded-md p-2 text-muted-foreground hover:text-foreground"
+              >
+                <YoutubeIcon className="size-4" />
+              </a>
+            </div>
           ))}
         </div>
 

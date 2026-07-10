@@ -82,6 +82,7 @@ export interface Dictionary {
     sortPriceAsc: string;
     sortPriceDesc: string;
     allBrands: string;
+    searchOnYoutube: string;
   };
   configurator: {
     loading: string;
@@ -273,6 +274,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       sortPriceAsc: "Сначала дешевле",
       sortPriceDesc: "Сначала дороже",
       allBrands: "Все бренды",
+      searchOnYoutube: "Смотреть на YouTube",
     },
     configurator: {
       loading: "Загрузка компонентов...",
@@ -504,6 +506,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       sortPriceAsc: "Price: low to high",
       sortPriceDesc: "Price: high to low",
       allBrands: "All brands",
+      searchOnYoutube: "Watch on YouTube",
     },
     configurator: {
       loading: "Loading components...",
@@ -735,6 +738,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       sortPriceAsc: "Avval arzoni",
       sortPriceDesc: "Avval qimmati",
       allBrands: "Barcha brendlar",
+      searchOnYoutube: "YouTube'da ko'rish",
     },
     configurator: {
       loading: "Komponentlar yuklanmoqda...",

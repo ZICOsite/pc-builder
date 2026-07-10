@@ -11,6 +11,11 @@ export function formatPrice(price: number, currency: string, locale: Locale): st
   return `${price.toLocaleString(NUMBER_LOCALES[locale])} ${currency}`;
 }
 
+export function youtubeSearchUrl(component: Pick<Component, "brand" | "name">): string {
+  const query = `${component.brand} ${component.name}`;
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+}
+
 export function specSummary(component: Component, t: Dictionary): string | null {
   if (component.cpuSpecs) return `${component.cpuSpecs.cores} ${t.specs.cores} · ${component.cpuSpecs.socket}`;
   if (component.motherboardSpecs) return `${component.motherboardSpecs.socket} · ${component.motherboardSpecs.formFactor}`;
