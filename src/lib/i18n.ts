@@ -244,6 +244,8 @@ export interface Dictionary {
       categoryLabel: string;
       downloadTemplate: string;
       uploadLabel: string;
+      uploadHint: string;
+      uploadReplaceHint: string;
       parsedRowsLabel: (count: number) => string;
       parseErrorPrefix: string;
       jsonPlaceholder: string;
@@ -499,7 +501,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
         modeJson: "JSON",
         categoryLabel: "Категория",
         downloadTemplate: "Скачать шаблон CSV",
-        uploadLabel: "Загрузить CSV-файл",
+        uploadLabel: "Перетащите CSV-файл сюда или нажмите, чтобы выбрать",
+        uploadHint: "Заполненный шаблон для выбранной категории",
+        uploadReplaceHint: "Нажмите, чтобы выбрать другой файл",
         parsedRowsLabel: (count) => `Распознано строк: ${count}`,
         parseErrorPrefix: "Ошибка разбора файла: ",
         jsonPlaceholder: "Вставьте JSON-массив товаров...",
@@ -754,7 +758,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
         modeJson: "JSON",
         categoryLabel: "Category",
         downloadTemplate: "Download CSV template",
-        uploadLabel: "Upload CSV file",
+        uploadLabel: "Drag & drop a CSV file here, or click to browse",
+        uploadHint: "A filled-in template for the selected category",
+        uploadReplaceHint: "Click to choose a different file",
         parsedRowsLabel: (count) => `Parsed rows: ${count}`,
         parseErrorPrefix: "Failed to parse file: ",
         jsonPlaceholder: "Paste a JSON array of products...",
@@ -1009,7 +1015,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
         modeJson: "JSON",
         categoryLabel: "Turkum",
         downloadTemplate: "CSV shablonini yuklab olish",
-        uploadLabel: "CSV faylni yuklash",
+        uploadLabel: "CSV faylni shu yerga torting yoki tanlash uchun bosing",
+        uploadHint: "Tanlangan turkum uchun to'ldirilgan shablon",
+        uploadReplaceHint: "Boshqa faylni tanlash uchun bosing",
         parsedRowsLabel: (count) => `Aniqlangan qatorlar: ${count}`,
         parseErrorPrefix: "Faylni o'qishda xatolik: ",
         jsonPlaceholder: "Tovarlar JSON massivini joylashtiring...",

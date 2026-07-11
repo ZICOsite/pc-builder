@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type DragEvent } from "react";
+import { FileCheck2, Upload } from "lucide-react";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { bulkCreateComponents } from "@/lib/api";
 import { COMPONENT_TYPES, type BulkImportResponse, type ComponentInput, type ComponentType } from "@/lib/types";
 import { BULK_IMPORT_MAX_ITEMS, buildCsvTemplateForType, csvRowToComponentInput, parseCsvFile, parseJsonInput } from "@/lib/bulk-import";
+import { cn } from "@/lib/utils";
 import { BackButton } from "@/components/back-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,9 +19,12 @@ export default function BulkImportPage() {
   const auth = useAuth();
   const { t } = useLocale();
   const b = t.admin.bulkImport;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [mode, setMode] = useState<Mode>("csv");
   const [csvType, setCsvType] = useState<ComponentType>("CPU");
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
   const [items, setItems] = useState<ComponentInput[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
   const [jsonText, setJsonText] = useState("");
@@ -39,6 +44,7 @@ export default function BulkImportPage() {
   }
 
   async function handleCsvUpload(file: File) {
+    setFileName(file.name);
     setParseError(null);
     setResult(null);
     try {
@@ -121,6 +127,7 @@ export default function BulkImportPage() {
                 onChange={(e) => {
                   setCsvType(e.target.value as ComponentType);
                   setItems([]);
+                  setFileName(null);
                   setParseError(null);
                   setResult(null);
                 }}
@@ -137,19 +144,52 @@ export default function BulkImportPage() {
             <Button type="button" variant="outline" size="sm" onClick={handleDownloadTemplate} className="self-start">
               {b.downloadTemplate}
             </Button>
-            <div className="flex flex-col gap-1">
-              <label htmlFor="csv-upload" className="text-sm font-medium">
-                {b.uploadLabel}
-              </label>
+
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+              }}
+              onDragOver={(e: DragEvent) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e: DragEvent) => {
+                e.preventDefault();
+                setDragOver(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) void handleCsvUpload(file);
+              }}
+              className={cn(
+                "flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed p-6 text-center transition-colors outline-none",
+                dragOver ? "border-primary bg-primary/5" : "border-input hover:border-primary/50",
+              )}
+            >
+              {fileName ? (
+                <>
+                  <FileCheck2 className="size-6 text-primary" />
+                  <p className="text-sm font-medium">{fileName}</p>
+                  <p className="text-xs text-muted-foreground">{b.uploadReplaceHint}</p>
+                </>
+              ) : (
+                <>
+                  <Upload className="size-6 text-muted-foreground" />
+                  <p className="text-sm font-medium">{b.uploadLabel}</p>
+                  <p className="text-xs text-muted-foreground">{b.uploadHint}</p>
+                </>
+              )}
               <input
-                id="csv-upload"
+                ref={fileInputRef}
                 type="file"
                 accept=".csv"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) void handleCsvUpload(file);
                 }}
-                className="text-sm"
+                className="hidden"
               />
             </div>
           </CardContent>
