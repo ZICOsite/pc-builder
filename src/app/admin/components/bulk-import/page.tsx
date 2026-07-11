@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { bulkCreateComponents } from "@/lib/api";
-import type { BulkImportResponse, ComponentInput } from "@/lib/types";
-import { BULK_IMPORT_MAX_ITEMS, buildCsvTemplate, csvRowToComponentInput, parseCsvFile, parseJsonInput } from "@/lib/bulk-import";
+import { COMPONENT_TYPES, type BulkImportResponse, type ComponentInput, type ComponentType } from "@/lib/types";
+import { BULK_IMPORT_MAX_ITEMS, buildCsvTemplateForType, csvRowToComponentInput, parseCsvFile, parseJsonInput } from "@/lib/bulk-import";
 import { BackButton } from "@/components/back-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 type Mode = "csv" | "json";
 
@@ -18,6 +19,7 @@ export default function BulkImportPage() {
   const b = t.admin.bulkImport;
 
   const [mode, setMode] = useState<Mode>("csv");
+  const [csvType, setCsvType] = useState<ComponentType>("CPU");
   const [items, setItems] = useState<ComponentInput[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
   const [jsonText, setJsonText] = useState("");
@@ -27,11 +29,11 @@ export default function BulkImportPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   function handleDownloadTemplate() {
-    const blob = new Blob([buildCsvTemplate()], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([buildCsvTemplateForType(csvType)], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "pc-forge-components-template.csv";
+    a.download = `pc-forge-${csvType.toLowerCase()}-template.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -44,7 +46,7 @@ export default function BulkImportPage() {
       const parsed: ComponentInput[] = [];
       const errors: string[] = [];
       rows.forEach((row, i) => {
-        const mapped = csvRowToComponentInput(row);
+        const mapped = csvRowToComponentInput({ ...row, type: csvType });
         if ("error" in mapped) errors.push(`${i + 1}: ${mapped.error}`);
         else parsed.push(mapped.input);
       });
@@ -111,6 +113,27 @@ export default function BulkImportPage() {
       {mode === "csv" && (
         <Card>
           <CardContent className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="csv-type">{b.categoryLabel}</Label>
+              <select
+                id="csv-type"
+                value={csvType}
+                onChange={(e) => {
+                  setCsvType(e.target.value as ComponentType);
+                  setItems([]);
+                  setParseError(null);
+                  setResult(null);
+                }}
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+              >
+                {COMPONENT_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {t.categories[type]}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <Button type="button" variant="outline" size="sm" onClick={handleDownloadTemplate} className="self-start">
               {b.downloadTemplate}
             </Button>

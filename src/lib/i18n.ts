@@ -241,6 +241,7 @@ export interface Dictionary {
       backLabel: string;
       modeCsv: string;
       modeJson: string;
+      categoryLabel: string;
       downloadTemplate: string;
       uploadLabel: string;
       parsedRowsLabel: (count: number) => string;
@@ -496,6 +497,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         backLabel: "← К товарам",
         modeCsv: "CSV-файл",
         modeJson: "JSON",
+        categoryLabel: "Категория",
         downloadTemplate: "Скачать шаблон CSV",
         uploadLabel: "Загрузить CSV-файл",
         parsedRowsLabel: (count) => `Распознано строк: ${count}`,
@@ -750,6 +752,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         backLabel: "← Back to products",
         modeCsv: "CSV file",
         modeJson: "JSON",
+        categoryLabel: "Category",
         downloadTemplate: "Download CSV template",
         uploadLabel: "Upload CSV file",
         parsedRowsLabel: (count) => `Parsed rows: ${count}`,
@@ -1004,6 +1007,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
         backLabel: "← Tovarlarga qaytish",
         modeCsv: "CSV fayl",
         modeJson: "JSON",
+        categoryLabel: "Turkum",
         downloadTemplate: "CSV shablonini yuklab olish",
         uploadLabel: "CSV faylni yuklash",
         parsedRowsLabel: (count) => `Aniqlangan qatorlar: ${count}`,

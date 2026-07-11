@@ -39,21 +39,22 @@ const EXAMPLE_ROWS: Record<ComponentType, Record<string, string>> = {
   HEADSET: { brand: "HyperX", name: "Cloud II", price: "550000", stock: "8", headset_connection: "USB", headset_headsetType: "Over-ear", headset_microphone: "true" },
 };
 
-export function buildCsvTemplate(): string {
-  const allColumns = [...COMMON_COLUMNS, ...Object.values(TYPE_COLUMNS).flat()];
-  const header = allColumns.join(",");
+// Шаблон только под один выбранный тип — так в файле нет полусотни нерелевантных колонок
+// от других типов, что делает ручное заполнение в Excel реалистичным (широкий "мастер-файл"
+// на все 12 типов сразу удобен только для программной/ИИ-подготовки данных — для этого есть
+// отдельный режим JSON).
+export function buildCsvTemplateForType(type: ComponentType): string {
+  const columns = [...COMMON_COLUMNS.filter((c) => c !== "type"), ...TYPE_COLUMNS[type]];
+  const header = columns.join(",");
+  const example = EXAMPLE_ROWS[type];
+  const row = columns
+    .map((column) => {
+      const value = example[column] ?? "";
+      return value.includes(",") ? `"${value}"` : value;
+    })
+    .join(",");
 
-  const rows = (Object.keys(EXAMPLE_ROWS) as ComponentType[]).map((type) => {
-    const example = EXAMPLE_ROWS[type];
-    return allColumns
-      .map((column) => {
-        const value = column === "type" ? type : (example[column] ?? "");
-        return value.includes(",") ? `"${value}"` : value;
-      })
-      .join(",");
-  });
-
-  return [header, ...rows].join("\n");
+  return [header, row].join("\n");
 }
 
 function num(v: string | undefined): number | undefined {
