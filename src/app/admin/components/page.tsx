@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, Upload } from "lucide-react";
 import { useAuth } from "@/components/telegram-provider";
 import { useLocale } from "@/components/locale-provider";
 import { deleteComponent, getAdminComponents } from "@/lib/api";
@@ -70,11 +70,17 @@ export default function AdminComponentsPage() {
     <>
       <BackButton fallbackHref="/admin" />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="text-xl font-semibold">{t.admin.componentsTitle}</h1>
-        <Button render={<Link href="/admin/components/new" />} nativeButton={false} size="sm">
-          {t.admin.addComponent}
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          <Button render={<Link href="/admin/components/bulk-import" />} nativeButton={false} size="sm" variant="outline">
+            <Upload className="size-4" />
+            {t.admin.bulkImportButton}
+          </Button>
+          <Button render={<Link href="/admin/components/new" />} nativeButton={false} size="sm">
+            {t.admin.addComponent}
+          </Button>
+        </div>
       </div>
 
       {state.status === "loading" && (

@@ -11,6 +11,16 @@ export function formatPrice(price: number, currency: string, locale: Locale): st
   return `${price.toLocaleString(NUMBER_LOCALES[locale])} ${currency}`;
 }
 
+export function slugify(input: string): string {
+  return input
+    .normalize("NFKD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function youtubeSearchUrl(component: Pick<Component, "brand" | "name">): string {
   const query = `${component.brand} ${component.name}`;
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;

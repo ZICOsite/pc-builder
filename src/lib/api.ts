@@ -4,6 +4,7 @@ import type {
   AdminStatsPoint,
   AdminUser,
   Build,
+  BulkImportResponse,
   Component,
   ComponentInput,
   ComponentType,
@@ -213,6 +214,17 @@ export async function createComponent(input: ComponentInput, accessToken: string
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
+  });
+}
+
+export async function bulkCreateComponents(
+  items: ComponentInput[],
+  accessToken: string,
+): Promise<BulkImportResponse> {
+  return apiFetch("/admin/components/bulk", accessToken, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
   });
 }
 

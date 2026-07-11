@@ -3,19 +3,10 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useLocale } from "@/components/locale-provider";
 import { COMPONENT_TYPES, type Component, type ComponentInput, type ComponentType } from "@/lib/types";
+import { slugify } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
-function slugify(input: string): string {
-  return input
-    .normalize("NFKD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 interface FormState {
   type: ComponentType;

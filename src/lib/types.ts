@@ -315,3 +315,13 @@ export interface ComponentInput {
   caseSpecs?: CaseSpecs;
   coolingSpecs?: { type: string; socket: string; tdpSupport: number; height?: number };
 }
+
+export type BulkImportRowResult =
+  | { index: number; status: "created"; id: number; slug: string }
+  | { index: number; status: "error"; message: string };
+
+export interface BulkImportResponse {
+  createdCount: number;
+  failedCount: number;
+  results: BulkImportRowResult[];
+}

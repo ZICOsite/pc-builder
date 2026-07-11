@@ -167,6 +167,7 @@ export interface Dictionary {
     emptyComponents: string;
     inactiveBadge: string;
     allCategories: string;
+    bulkImportButton: string;
     form: {
       typeLabel: string;
       brandLabel: string;
@@ -234,6 +235,26 @@ export interface Dictionary {
       leaderboardEmpty: string;
       quantitySoldLabel: (count: number) => string;
       ordersCountLabel: (count: number) => string;
+    };
+    bulkImport: {
+      title: string;
+      backLabel: string;
+      modeCsv: string;
+      modeJson: string;
+      downloadTemplate: string;
+      uploadLabel: string;
+      parsedRowsLabel: (count: number) => string;
+      parseErrorPrefix: string;
+      jsonPlaceholder: string;
+      jsonExampleToggle: string;
+      jsonExample: string;
+      submit: string;
+      submitting: string;
+      noItemsParsed: string;
+      tooManyItems: (max: number) => string;
+      resultsSummary: (created: number, failed: number) => string;
+      rowErrorPrefix: (row: number) => string;
+      submitErrorFallback: string;
     };
   };
 }
@@ -361,6 +382,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       emptyComponents: "Товаров пока нет",
       inactiveBadge: "Скрыт",
       allCategories: "Все категории",
+      bulkImportButton: "Массовый импорт",
       form: {
         typeLabel: "Категория",
         brandLabel: "Бренд",
@@ -468,6 +490,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         leaderboardEmpty: "Пока нет завершённых заказов",
         quantitySoldLabel: (count) => `${count} шт. продано`,
         ordersCountLabel: (count) => `${count} заказов`,
+      },
+      bulkImport: {
+        title: "Массовый импорт товаров",
+        backLabel: "← К товарам",
+        modeCsv: "CSV-файл",
+        modeJson: "JSON",
+        downloadTemplate: "Скачать шаблон CSV",
+        uploadLabel: "Загрузить CSV-файл",
+        parsedRowsLabel: (count) => `Распознано строк: ${count}`,
+        parseErrorPrefix: "Ошибка разбора файла: ",
+        jsonPlaceholder: "Вставьте JSON-массив товаров...",
+        jsonExampleToggle: "Показать пример",
+        jsonExample:
+          '[\n  {\n    "type": "RAM",\n    "brand": "Kingston",\n    "name": "Fury Beast 16GB",\n    "slug": "kingston-fury-beast-16gb",\n    "price": 450000,\n    "stock": 10,\n    "ramSpecs": { "capacityGb": 16, "speedMhz": 3200, "memoryType": "DDR4" }\n  }\n]',
+        submit: "Загрузить товары",
+        submitting: "Загрузка...",
+        noItemsParsed: "Нет ни одной распознанной строки",
+        tooManyItems: (max) => `Слишком много товаров за раз (максимум ${max})`,
+        resultsSummary: (created, failed) => `Создано: ${created} · Ошибок: ${failed}`,
+        rowErrorPrefix: (row) => `Строка ${row}: `,
+        submitErrorFallback: "Не удалось выполнить импорт",
       },
     },
   },
@@ -593,6 +636,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       emptyComponents: "No products yet",
       inactiveBadge: "Hidden",
       allCategories: "All categories",
+      bulkImportButton: "Bulk import",
       form: {
         typeLabel: "Category",
         brandLabel: "Brand",
@@ -700,6 +744,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         leaderboardEmpty: "No completed orders yet",
         quantitySoldLabel: (count) => `${count} sold`,
         ordersCountLabel: (count) => `${count} orders`,
+      },
+      bulkImport: {
+        title: "Bulk product import",
+        backLabel: "← Back to products",
+        modeCsv: "CSV file",
+        modeJson: "JSON",
+        downloadTemplate: "Download CSV template",
+        uploadLabel: "Upload CSV file",
+        parsedRowsLabel: (count) => `Parsed rows: ${count}`,
+        parseErrorPrefix: "Failed to parse file: ",
+        jsonPlaceholder: "Paste a JSON array of products...",
+        jsonExampleToggle: "Show example",
+        jsonExample:
+          '[\n  {\n    "type": "RAM",\n    "brand": "Kingston",\n    "name": "Fury Beast 16GB",\n    "slug": "kingston-fury-beast-16gb",\n    "price": 450000,\n    "stock": 10,\n    "ramSpecs": { "capacityGb": 16, "speedMhz": 3200, "memoryType": "DDR4" }\n  }\n]',
+        submit: "Upload products",
+        submitting: "Uploading...",
+        noItemsParsed: "No rows were recognized",
+        tooManyItems: (max) => `Too many products at once (max ${max})`,
+        resultsSummary: (created, failed) => `Created: ${created} · Failed: ${failed}`,
+        rowErrorPrefix: (row) => `Row ${row}: `,
+        submitErrorFallback: "Failed to import products",
       },
     },
   },
@@ -825,6 +890,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       emptyComponents: "Hozircha tovarlar yo'q",
       inactiveBadge: "Yashirilgan",
       allCategories: "Barcha turkumlar",
+      bulkImportButton: "Ommaviy import",
       form: {
         typeLabel: "Kategoriya",
         brandLabel: "Brend",
@@ -932,6 +998,27 @@ export const dictionaries: Record<Locale, Dictionary> = {
         leaderboardEmpty: "Hozircha yakunlangan buyurtmalar yo'q",
         quantitySoldLabel: (count) => `${count} ta sotilgan`,
         ordersCountLabel: (count) => `${count} ta buyurtma`,
+      },
+      bulkImport: {
+        title: "Tovarlarni ommaviy import qilish",
+        backLabel: "← Tovarlarga qaytish",
+        modeCsv: "CSV fayl",
+        modeJson: "JSON",
+        downloadTemplate: "CSV shablonini yuklab olish",
+        uploadLabel: "CSV faylni yuklash",
+        parsedRowsLabel: (count) => `Aniqlangan qatorlar: ${count}`,
+        parseErrorPrefix: "Faylni o'qishda xatolik: ",
+        jsonPlaceholder: "Tovarlar JSON massivini joylashtiring...",
+        jsonExampleToggle: "Namunani ko'rsatish",
+        jsonExample:
+          '[\n  {\n    "type": "RAM",\n    "brand": "Kingston",\n    "name": "Fury Beast 16GB",\n    "slug": "kingston-fury-beast-16gb",\n    "price": 450000,\n    "stock": 10,\n    "ramSpecs": { "capacityGb": 16, "speedMhz": 3200, "memoryType": "DDR4" }\n  }\n]',
+        submit: "Tovarlarni yuklash",
+        submitting: "Yuklanmoqda...",
+        noItemsParsed: "Birorta ham qator aniqlanmadi",
+        tooManyItems: (max) => `Bir vaqtda juda ko'p tovar (maksimum ${max})`,
+        resultsSummary: (created, failed) => `Yaratildi: ${created} · Xatolar: ${failed}`,
+        rowErrorPrefix: (row) => `${row}-qator: `,
+        submitErrorFallback: "Import qilib bo'lmadi",
       },
     },
   },
