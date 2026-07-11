@@ -70,10 +70,15 @@ export default function AdminComponentsPage() {
     <>
       <BackButton fallbackHref="/admin" />
 
+      <h1 className="text-center text-xl font-semibold">{t.admin.componentsTitle}</h1>
+
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-semibold">{t.admin.componentsTitle}</h1>
         <Button render={<Link href="/admin/components/new" />} nativeButton={false} size="sm">
           {t.admin.addComponent}
+        </Button>
+        <Button render={<Link href="/admin/components/bulk-import" />} nativeButton={false} size="sm" variant="outline">
+          <Upload className="size-4" />
+          {t.admin.bulkImportButton}
         </Button>
       </div>
 
@@ -184,11 +189,6 @@ export default function AdminComponentsPage() {
           </div>
         </>
       )}
-
-      <Button render={<Link href="/admin/components/bulk-import" />} nativeButton={false} variant="outline" className="w-full">
-        <Upload className="size-4" />
-        {t.admin.bulkImportButton}
-      </Button>
     </>
   );
 }
